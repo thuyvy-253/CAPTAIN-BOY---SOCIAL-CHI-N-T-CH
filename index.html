@@ -15,7 +15,6 @@
             color: white;
             font-family: 'Be Vietnam Pro', sans-serif;
             min-height: 100vh;
-            /* Tạo dải màu chuyển động mạnh hơn */
             background: linear-gradient(135deg, #050b18, #0a192f, #1e3a8a, #422006, #050b18) !important;
             background-size: 400% 400% !important;
             animation: galaxyMove 15s ease infinite !important;
@@ -29,18 +28,16 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* 2. LỚP CANVAS TINH HÀ */
         #galaxy-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* Nằm dưới nội dung */
+            z-index: 0;
             pointer-events: none;
         }
 
-        /* 3. THIẾT KẾ CARD TRONG SUỐT (GLASSMORPHISM) */
         .galaxy-card {
             background: rgba(16, 25, 45, 0.75);
             border: 1px solid rgba(234, 179, 8, 0.3);
@@ -49,7 +46,41 @@
             -webkit-backdrop-filter: blur(15px);
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             position: relative;
-            z-index: 10; /* Đẩy nội dung lên trên canvas */
+            z-index: 10;
+        }
+
+        /* NÚT NHẠC CUSTOM */
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(234, 179, 8, 0.2);
+            border: 2px solid #eab308;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+        }
+        
+        #music-control:hover {
+            transform: scale(1.1);
+            background: rgba(234, 179, 8, 0.4);
+        }
+
+        .music-playing {
+            animation: pulse-yellow 2s infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
         }
 
         .main-content {
@@ -80,7 +111,16 @@
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <!-- Lớp nền sao bay -->
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- NÚT ĐIỀU KHIỂN NHẠC -->
+    <div id="music-control" onclick="toggleMusic()">
+        <span id="music-icon" style="font-size: 24px;">🔇</span>
+    </div>
+
     <canvas id="galaxy-canvas"></canvas>
 
     <div class="max-w-4xl mx-auto main-content">
@@ -132,6 +172,23 @@
     </div>
 
     <script>
+        // --- SCRIPT ĐIỀU KHIỂN NHẠC ---
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-control');
+        const musicIcon = document.getElementById('music-icon');
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                musicIcon.innerText = "🔊";
+                musicBtn.classList.add('music-playing');
+            } else {
+                music.pause();
+                musicIcon.innerText = "🔇";
+                musicBtn.classList.remove('music-playing');
+            }
+        }
+
         // --- SCRIPT TẠO TINH HÀ (SAO BAY) ---
         const canvas = document.getElementById('galaxy-canvas');
         const ctx = canvas.getContext('2d');
@@ -147,7 +204,6 @@
                     y: Math.random() * canvas.height,
                     size: Math.random() * 2 + 0.5,
                     speed: Math.random() * 0.8 + 0.2,
-                    // Màu sắc sao: vàng nhạt hoặc xanh nhạt
                     color: Math.random() > 0.5 ? '#facc15' : '#60a5fa',
                     opacity: Math.random()
                 });
@@ -162,12 +218,8 @@
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
-                
-                // Di chuyển sao trôi lên
                 p.y -= p.speed;
                 if (p.y < -10) p.y = canvas.height + 10;
-                
-                // Hiệu ứng nhấp nháy
                 p.opacity += (Math.random() - 0.5) * 0.05;
                 if (p.opacity < 0.1) p.opacity = 0.1;
                 if (p.opacity > 1) p.opacity = 1;
@@ -179,7 +231,7 @@
         initGalaxy();
         drawGalaxy();
 
-        // --- DỮ LIỆU VÀ BIỂU ĐỒ (GIỮ NGUYÊN) ---
+        // --- DỮ LIỆU VÀ BIỂU ĐỒ ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzyWLw1F-pGhjOU_-8kyvIfzOAJWtNYUCLaahwCP07dF41XPur26lzlY_ML1Vopdn9/exec";
         let allPosts = [];
         let chart1, chart2;
