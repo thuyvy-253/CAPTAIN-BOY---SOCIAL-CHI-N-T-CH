@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #050b18;
+            background-image: 
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        .galaxy-card {
+            background: rgba(16, 25, 45, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            backdrop-filter: blur(8px);
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
+        }
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #facc15;
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-black text-yellow-400 mb-2 tracking-tighter">CAPTAIN BOY</h1>
+            <p class="text-blue-400 font-medium italic">✨ Tinh Hà Chiến Tích - Bí Kíp Leo Top ✨</p>
+        </header>
+
+        <!-- Bộ lọc nhanh -->
+        <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
+            <button onclick="filter('All')" class="px-4 py-2 rounded-full bg-blue-900/50 border border-blue-500 text-sm">Tất cả</button>
+            <button onclick="filter('Facebook')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-sm">Facebook</button>
+            <button onclick="filter('TikTok')" class="px-4 py-2 rounded-full bg-pink-600 hover:bg-pink-500 text-sm">TikTok</button>
+            <button onclick="filter('Threads')" class="px-4 py-2 rounded-full bg-black border border-gray-600 text-sm">Threads</button>
+        </div>
+
+        <!-- Danh sách bài đăng -->
+        <div id="loading" class="flex justify-center my-10">
+            <div class="loading-spinner"></div>
+            <span class="ml-3">Đang kết nối Tinh Hà...</span>
+        </div>
+        
+        <div id="content" class="space-y-6"></div>
+    </div>
+
+    <script>
+        // THAY LINK WEB APP CỦA BẠN VÀO ĐÂY
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZwFVjD6O96l5LTYhjvWONQm3avp9ABgNcUoCJGFdhCxE6CnljDg9qMhXDGl2cHqc/exec";
+        
+        let posts = [];
+
+        async function fetchData() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                posts = await response.json();
+                document.getElementById('loading').classList.add('hidden');
+                render(posts);
+            } catch (error) {
+                console.error("Lỗi:", error);
+                document.getElementById('loading').innerHTML = "Không thể kết nối. Hãy kiểm tra lại link Script!";
+            }
+        }
+
+        function render(data) {
+            const container = document.getElementById('content');
+            container.innerHTML = data.map(item => `
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-500'}">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-[10px] uppercase tracking-widest bg-blue-800 px-2 py-1 rounded">${item.platform}</span>
+                        <span class="text-xs ${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-400'} font-bold">
+                            ${item.status === 'Đang chạy' ? '🔥 ' + item.status : item.status}
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-white mb-2">${item.goal}</h3>
+                    <p class="text-gray-400 text-sm mb-4 leading-relaxed">${item.keywords}</p>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="${item.link}" target="_blank" class="btn-glow bg-yellow-500 text-black font-black py-3 rounded-xl text-center text-sm transition-all">
+                            CHIẾN NGAY
+                        </a>
+                        <button onclick="copyContent('${item.content.replace(/'/g, "\\'")}')" class="bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl text-sm transition-all">
+                            COPY VĂN MẪU
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filter(p) {
+            if (p === 'All') render(posts);
+            else render(posts.filter(x => x.platform === p));
+        }
+
+        function copyContent(text) {
+            navigator.clipboard.writeText(text);
+            alert("✨ Đã copy văn mẫu! Các Cừu lên bài thôi!");
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
