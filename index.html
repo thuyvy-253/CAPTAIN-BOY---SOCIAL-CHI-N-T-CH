@@ -173,21 +173,50 @@
 
     <script>
         // --- SCRIPT ĐIỀU KHIỂN NHẠC ---
-        const music = document.getElementById('bg-music');
-        const musicBtn = document.getElementById('music-control');
-        const musicIcon = document.getElementById('music-icon');
+      // --- SCRIPT ĐIỀU KHIỂN NHẠC TỰ ĐỘNG ---
+const music = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-control');
+const musicIcon = document.getElementById('music-icon');
 
-        function toggleMusic() {
-            if (music.paused) {
-                music.play();
-                musicIcon.innerText = "🔊";
-                musicBtn.classList.add('music-playing');
-            } else {
-                music.pause();
-                musicIcon.innerText = "🔇";
-                musicBtn.classList.remove('music-playing');
-            }
-        }
+// Hàm bật/tắt nhạc thủ công
+function toggleMusic() {
+    if (music.paused) {
+        music.play();
+        musicIcon.innerText = "🔊";
+        musicBtn.classList.add('music-playing');
+    } else {
+        music.pause();
+        musicIcon.innerText = "🔇";
+        musicBtn.classList.remove('music-playing');
+    }
+}
+
+// TỰ ĐỘNG PHÁT KHI VÀO TRANG
+function autoPlayMusic() {
+    music.play().then(() => {
+        // Nếu trình duyệt cho phép phát ngay
+        musicIcon.innerText = "🔊";
+        musicBtn.classList.add('music-playing');
+    }).catch(() => {
+        // Nếu trình duyệt chặn (phổ biến), nhạc sẽ đợi cú click đầu tiên của người dùng
+        console.log("Trình duyệt chặn tự động phát. Nhạc sẽ bật sau khi bạn tương tác.");
+        
+        const playOnInteraction = () => {
+            music.play();
+            musicIcon.innerText = "🔊";
+            musicBtn.classList.add('music-playing');
+            // Sau khi phát thành công, gỡ bỏ sự kiện để không chạy lại nữa
+            document.removeEventListener('click', playOnInteraction);
+            document.removeEventListener('touchstart', playOnInteraction);
+        };
+
+        document.addEventListener('click', playOnInteraction);
+        document.addEventListener('touchstart', playOnInteraction); // Cho điện thoại
+    });
+}
+
+// Chạy hàm autoPlay ngay khi load xong trang
+window.addEventListener('load', autoPlayMusic);
 
         // --- SCRIPT TẠO TINH HÀ (SAO BAY) ---
         const canvas = document.getElementById('galaxy-canvas');
