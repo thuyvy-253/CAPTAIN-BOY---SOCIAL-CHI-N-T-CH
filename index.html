@@ -8,30 +8,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: #050b18; color: white; font-family: 'Be Vietnam Pro', sans-serif; background-image: radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 40px); background-size: 400px 400px; }
+        body { background: #050b18; color: white; font-family: 'Be Vietnam Pro', sans-serif; background-image: radial-gradient(white, rgba(255,255,255,.05) 1px, transparent 40px); }
         .galaxy-card { background: rgba(16, 25, 45, 0.9); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; backdrop-filter: blur(10px); }
-        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
         .btn-action { background: #f1c40f; color: black; font-weight: 900; transition: 0.3s; }
-        .btn-action:hover { transform: scale(1.05); }
-        canvas { max-height: 200px !important; }
+        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-4xl mx-auto">
         <header class="text-center mb-10">
-            <h1 class="text-5xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
+            <h1 class="text-5xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter">CAPTAIN BOY</h1>
             <p class="text-blue-300 text-[10px] tracking-[0.4em] font-bold mb-8 uppercase">✨ TINH HÀ CHIẾN TÍCH ✨</p>
             
-            <!-- BIỂU ĐỒ DASHBOARD TỪ SHEET -->
+            <!-- 2 BIỂU ĐỒ SONG SONG -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <div class="galaxy-card p-6">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Phân bổ nền tảng</p>
-                    <canvas id="pieChart"></canvas>
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tỷ lệ bài đăng</p>
+                    <canvas id="chartPlatforms"></canvas>
                 </div>
-                <div class="galaxy-card p-6 flex flex-col justify-center items-center">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tổng KPI thực tế</p>
-                    <p id="totalKpi" class="text-6xl font-black text-yellow-400">0</p>
-                    <p class="text-blue-400 mt-2 font-bold uppercase tracking-widest text-xs">Điểm Social</p>
+                <div class="galaxy-card p-6">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT (Thực tế vs Kỳ vọng)</p>
+                    <canvas id="chartKPI"></canvas>
                 </div>
             </div>
         </header>
@@ -44,77 +41,92 @@
                     <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Leo Top)">
                     <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
                     <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
-                    <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 font-black py-4 rounded-xl mt-2 uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
+                    <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 font-black py-4 rounded-xl mt-2 uppercase tracking-widest text-white">GỬI CHIẾN TÍCH</button>
                 </div>
-                <div id="success-msg" class="hidden text-center py-4">
-                    <p class="text-green-400 font-bold text-lg animate-bounce text-center">✨ ĐÃ GHI NHẬN! ✨</p>
-                </div>
+                <div id="success-msg" class="hidden text-center py-4 text-green-400 font-bold">✨ ĐÃ GHI NHẬN! ✨</div>
             </div>
 
             <!-- BỘ LỌC -->
             <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
                 <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900 border border-blue-500 text-xs font-bold">Tất cả</button>
-                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold text-center">Facebook</button>
-                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold text-center">TikTok</button>
-                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold text-center">Threads</button>
+                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
+                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
+                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
             </div>
 
-            <!-- LIST BÀI ĐĂNG -->
             <div id="post-list" class="space-y-8"></div>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "THAY_LINK_SCRIPT_MOI_CUA_BAN_TAI_DAY";
+        const SCRIPT_URL = "THAY_LINK_SCRIPT_CUA_BAN_TAI_DAY";
         let allPosts = [];
-        let pieChart;
+        let chart1, chart2;
 
         async function init() {
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
-                
                 allPosts = data.posts;
-                
-                // Cập nhật số liệu Dashboard
-                document.getElementById('totalKpi').innerText = data.stats.totalKpi.toLocaleString();
-                updatePieChart(data.stats);
-                
+                updateCharts(data.stats);
                 render(allPosts);
             } catch (e) { document.getElementById('post-list').innerHTML = "Lỗi kết nối!"; }
         }
 
-        function updatePieChart(stats) {
-            const ctx = document.getElementById('pieChart').getContext('2d');
-            if(pieChart) pieChart.destroy();
-            pieChart = new Chart(ctx, {
+        function updateCharts(stats) {
+            // Biểu đồ 1: Số bài đăng (Tròn)
+            const ctx1 = document.getElementById('chartPlatforms').getContext('2d');
+            if(chart1) chart1.destroy();
+            chart1 = new Chart(ctx1, {
                 type: 'doughnut',
                 data: {
                     labels: ['Facebook', 'TikTok', 'Threads'],
                     datasets: [{
-                        data: [stats.facebook, stats.tiktok, stats.threads],
+                        data: [stats.fb, stats.tt, stats.th],
                         backgroundColor: ['#2563eb', '#db2777', '#ffffff'],
                         borderWidth: 0
                     }]
                 },
                 options: { plugins: { legend: { position: 'bottom', labels: { color: 'white' } } } }
             });
+
+            // Biểu đồ 2: So sánh KPI (Cột)
+            const ctx2 = document.getElementById('chartKPI').getContext('2d');
+            if(chart2) chart2.destroy();
+            chart2 = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['CMT Kỳ vọng', 'CMT Thực tế'],
+                    datasets: [{
+                        label: 'Số lượng',
+                        data: [stats.expected, stats.actual],
+                        backgroundColor: ['#374151', '#f1c40f'], // Xám và Vàng
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+                        x: { ticks: { color: 'white' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
         }
 
         function render(data) {
             const list = document.getElementById('post-list');
-            if (data.length === 0) { list.innerHTML = "<p class='text-center'>Chưa có bài mới!</p>"; return; }
             list.innerHTML = data.map(item => `
                 <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
                     <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px]">
                         <span class="text-blue-400">${item.platform}</span>
-                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic text-center">${item.status}</span>
+                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">${item.status}</span>
                     </div>
                     <h3 class="text-2xl font-black mb-2 text-white leading-tight uppercase italic">${item.goal}</h3>
-                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest leading-relaxed">Key: ${item.keywords}</p>
+                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest leading-relaxed font-bold">Key: ${item.keywords}</p>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase shadow-lg text-center">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20 text-center">LẤY VĂN MẪU</a>
+                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase shadow-lg">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
