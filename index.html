@@ -8,58 +8,180 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: #050b18; color: white; font-family: 'Be Vietnam Pro', sans-serif; background-image: radial-gradient(white, rgba(255,255,255,.05) 1px, transparent 40px); }
-        .galaxy-card { background: rgba(16, 25, 45, 0.9); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; backdrop-filter: blur(10px); }
-        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
+        :root {
+            --bg-dark: #050b18;
+            --accent-blue: #1e40af;
+            --accent-yellow: #eab308;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            /* Nền gradient chuyển động xanh - vàng */
+            background: linear-gradient(125deg, #050b18, #0a192f, #1e3a8a, #422006, #050b18);
+            background-size: 400% 400%;
+            animation: moveGradient 15s ease infinite;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Hiệu ứng Canvas nền */
+        #galaxy-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .galaxy-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(234, 179, 8, 0.2); /* Viền vàng nhẹ */
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        .galaxy-card:hover {
+            border-color: rgba(234, 179, 8, 0.5);
+            transform: translateY(-5px);
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            width: 100%;
+            margin-bottom: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.05);
+        }
+
+        /* Nút bấm hiệu ứng phát sáng */
+        .btn-glow-yellow {
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
+        }
+        .btn-glow-blue {
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
+    <!-- Canvas tạo sao bay -->
+    <canvas id="galaxy-canvas"></canvas>
+
+    <div class="max-w-4xl mx-auto relative z-10">
         <header class="text-center mb-10">
-            <h1 class="text-5xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-[10px] tracking-[0.4em] font-bold mb-8 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
+            <h1 class="text-6xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter drop-shadow-[0_0_15px_rgba(234,179,8,0.6)]">
+                CAPTAIN BOY
+            </h1>
+            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-8 uppercase opacity-80">
+                ✨ TINH HÀ CHIẾN TÍCH ✨
+            </p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div class="galaxy-card p-6">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Số bài tương tác</p>
+                <div class="galaxy-card p-6 border-t-2 border-blue-500">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold tracking-widest">Phân bổ nền tảng</p>
                     <canvas id="chartPlatforms"></canvas>
                 </div>
-                <div class="galaxy-card p-6">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT (Thực tế vs Kỳ vọng)</p>
+                <div class="galaxy-card p-6 border-t-2 border-yellow-500">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold tracking-widest">Tiến độ mục tiêu</p>
                     <canvas id="chartKPI"></canvas>
                 </div>
             </div>
         </header>
 
         <div class="max-w-2xl mx-auto">
-            <div class="galaxy-card p-6 mb-12 border-t-4 border-blue-500 shadow-2xl text-center">
-                <h2 class="text-xl font-black mb-6 uppercase tracking-widest text-blue-400">🚀 NỘP CHIẾN TÍCH</h2>
+            <!-- Form nộp -->
+            <div class="galaxy-card p-8 mb-12 border-b-4 border-yellow-500 shadow-2xl">
+                <h2 class="text-xl font-black mb-6 uppercase tracking-[0.2em] text-yellow-400 flex items-center justify-center">
+                    <span class="mr-2">🚀</span> NỘP CHIẾN TÍCH
+                </h2>
                 <div id="report-box">
                     <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Leo Top)">
                     <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
                     <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
-                    <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 font-black py-4 rounded-xl mt-2 uppercase text-white">GỬI CHIẾN TÍCH</button>
+                    <button onclick="sendReport()" id="btn-send" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-xl mt-4 uppercase transition-all btn-glow-yellow">GỬI CHIẾN TÍCH NGAY</button>
                 </div>
-                <div id="success-msg" class="hidden text-green-400 font-bold py-4">✨ ĐÃ GHI NHẬN! ✨</div>
+                <div id="success-msg" class="hidden text-yellow-400 font-bold py-4 text-center animate-bounce">
+                    ✨ ĐÃ GHI NHẬN VÀO TINH HÀ! ✨
+                </div>
             </div>
 
+            <!-- Filter -->
             <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
-                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900 border border-blue-500 text-xs font-bold">Tất cả</button>
-                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
-                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
-                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
+                <button onclick="filter('All')" class="px-6 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold hover:bg-white/20 transition">Tất cả</button>
+                <button onclick="filter('Facebook')" class="px-6 py-2 rounded-full bg-blue-600 text-xs font-bold btn-glow-blue">Facebook</button>
+                <button onclick="filter('TikTok')" class="px-6 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
+                <button onclick="filter('Threads')" class="px-6 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
             </div>
 
             <div id="post-list" class="space-y-8"></div>
         </div>
+
+        <footer class="text-center py-20 mt-10 border-t border-white/10 font-bold text-gray-500 text-xs tracking-widest">
+            @NHUNGCONBOTCUACAPTAINBOY <br>
+            <span class="text-[8px] opacity-50 uppercase">Powered by Galaxy Engine</span>
+        </footer>
     </div>
-  <!-- FOOTER -->
-            <footer class="text-center py-20 mt-10 border-t border-white/10 font-bold">
-                @nhungconbotcuacaptainboy
-            </footer>
-        </div>
-    </div>
+
     <script>
+        // --- HIỆU ỨNG GALAXY CANVAS ---
+        const canvas = document.getElementById('galaxy-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    speed: Math.random() * 0.5 + 0.1,
+                    color: Math.random() > 0.5 ? '#eab308' : '#3b82f6'
+                });
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                p.y -= p.speed;
+                if (p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        animateCanvas();
+
+        // --- LOGIC XỬ LÝ DỮ LIỆU (Giữ nguyên từ code cũ của bạn) ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzyWLw1F-pGhjOU_-8kyvIfzOAJWtNYUCLaahwCP07dF41XPur26lzlY_ML1Vopdn9/exec";
         let allPosts = [];
         let chart1, chart2;
@@ -68,14 +190,11 @@
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
-                console.log("Data received:", data); // Kiểm tra dữ liệu trong F12 Console
-                
                 allPosts = data.posts;
                 updateCharts(data.stats);
                 render(allPosts);
             } catch (e) { 
-                console.error(e);
-                document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà!"; 
+                document.getElementById('post-list').innerHTML = "<p class='text-center text-red-400'>Lỗi kết nối Tinh Hà!</p>"; 
             }
         }
 
@@ -88,11 +207,11 @@
                     labels: ['Facebook', 'TikTok', 'Threads'],
                     datasets: [{
                         data: [stats.fb, stats.tt, stats.th],
-                        backgroundColor: ['#2563eb', '#db2777', '#ffffff'],
+                        backgroundColor: ['#2563eb', '#db2777', '#facc15'],
                         borderWidth: 0
                     }]
                 },
-                options: { plugins: { legend: { position: 'bottom', labels: { color: 'white' } } } }
+                options: { plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } } }
             });
 
             const ctx2 = document.getElementById('chartKPI').getContext('2d');
@@ -104,14 +223,14 @@
                     datasets: [{
                         label: 'Số lượng CMT',
                         data: [stats.expected, stats.actual],
-                        backgroundColor: ['#374151', '#f1c40f'],
-                        borderRadius: 10
+                        backgroundColor: ['#334155', '#eab308'],
+                        borderRadius: 8
                     }]
                 },
                 options: {
                     scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
-                        x: { ticks: { color: 'white' } }
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
+                        x: { ticks: { color: '#94a3b8' } }
                     },
                     plugins: { legend: { display: false } }
                 }
@@ -120,18 +239,18 @@
 
         function render(data) {
             const list = document.getElementById('post-list');
-            if(!data || data.length === 0) { list.innerHTML = "<p class='text-center'>Chưa có bài mới!</p>"; return; }
+            if(!data || data.length === 0) { list.innerHTML = "<p class='text-center'>Chưa có tín hiệu mới từ vũ trụ!</p>"; return; }
             list.innerHTML = data.map(item => `
                 <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
                     <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px]">
-                        <span class="text-blue-400">${item.platform}</span>
-                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic text-center">${item.status}</span>
+                        <span class="text-blue-400 tracking-widest">${item.platform}</span>
+                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">${item.status}</span>
                     </div>
-                    <h3 class="text-2xl font-black mb-2 text-white italic uppercase">${item.goal}</h3>
+                    <h3 class="text-2xl font-black mb-2 text-white italic uppercase leading-tight">${item.goal}</h3>
                     <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">Key: ${item.keywords}</p>
-                    <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-xs uppercase transition-all hover:scale-105">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">LẤY VĂN MẪU</a>
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="${item.link}" target="_blank" class="bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-xl text-center text-xs uppercase transition-all transform hover:scale-105 shadow-lg shadow-yellow-500/20">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/10 transition-all">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
@@ -144,15 +263,24 @@
             const account = document.getElementById('account').value;
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
-            if(!name || !quantity) return alert("Điền đủ tên và số lượng nhé!");
-            btn.innerText = "ĐANG GỬI..."; btn.disabled = true;
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
-            document.getElementById('report-box').classList.add('hidden');
-            document.getElementById('success-msg').classList.remove('hidden');
+            if(!name || !quantity) return alert("Điền đủ tên và số lượng nhé Cừu ơi!");
+            
+            btn.innerText = "ĐANG TRUYỀN TÍN HIỆU..."; 
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
+                document.getElementById('report-box').classList.add('hidden');
+                document.getElementById('success-msg').classList.remove('hidden');
+            } catch (e) {
+                alert("Lỗi khi gửi, thử lại nhé!");
+                btn.innerText = "GỬI CHIẾN TÍCH";
+                btn.disabled = false;
+            }
         }
 
         init();
-        
     </script>
 </body>
 </html>
