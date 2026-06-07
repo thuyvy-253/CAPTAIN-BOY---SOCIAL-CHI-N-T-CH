@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
-    <!-- Font chữ tiếng Việt không lỗi -->
+    <!-- Font chữ chuẩn không lỗi -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -22,53 +22,46 @@
             backdrop-filter: blur(10px);
         }
         input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
-        input:focus { border-color: #3b82f6; }
-        .btn-glow { transition: 0.3s; }
-        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        .btn-main { background: #3b82f6; transition: 0.3s; }
+        .btn-main:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-action { background: #f1c40f; color: black; font-weight: 900; }
+        .btn-filter { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-2xl mx-auto">
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-black text-yellow-400 mb-2 tracking-tighter italic uppercase">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-xs tracking-[0.3em] font-bold">✨ TINH HÀ CHIẾN TÍCH ✨</p>
+        <!-- 1. HEADER -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
+            <p class="text-blue-300 text-xs tracking-widest font-bold">✨ TINH HÀ CHIẾN TÍCH ✨</p>
         </header>
 
-        <!-- Form Báo Cáo Chiến Tích -->
-        <div class="galaxy-card p-6 mb-12 border-t-4 border-blue-500">
+        <!-- 2. FORM BÁO CÁO CHIẾN TÍCH -->
+        <div class="galaxy-card p-6 mb-10 border-t-4 border-blue-500">
             <h2 class="text-xl font-black text-center mb-6 text-white uppercase tracking-widest">🚀 NỘP CHIẾN TÍCH</h2>
             <div id="report-box">
-                <div class="space-y-1">
-                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Tên Cừu</label>
-                    <input type="text" id="name" placeholder="Ví dụ: Cừu Leo Top">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Link/Acc đã cmt</label>
-                    <input type="text" id="account" placeholder="Link trang cá nhân hoặc tên Acc">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Số lượng CMT</label>
-                    <input type="number" id="quantity" placeholder="Bạn đã cmt bao nhiêu lần?">
-                </div>
-                <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl mt-4 transition-all uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
+                <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Leo Top)">
+                <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
+                <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
+                <button onclick="sendReport()" id="btn-send" class="w-full btn-main text-white font-black py-4 rounded-xl mt-2 uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
             </div>
             <div id="success-msg" class="hidden text-center py-4">
-                <p class="text-green-400 font-bold text-lg">✨ ĐÃ GHI NHẬN CHIẾN TÍCH! ✨</p>
+                <p class="text-green-400 font-bold text-lg animate-bounce">✨ ĐÃ GHI NHẬN CHIẾN TÍCH! ✨</p>
                 <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2">Gửi thêm báo cáo khác</button>
             </div>
         </div>
 
-        <!-- Filter -->
-        <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
-            <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900/40 border border-blue-500 text-xs font-bold">Tất cả</button>
+        <!-- 3. BỘ LỌC NỀN TẢNG (CHỖ BỊ THIẾU CỦA BẠN ĐÂY) -->
+        <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
+            <button onclick="filter('All')" class="btn-filter px-5 py-2 rounded-full text-xs font-bold">Tất cả</button>
             <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
             <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
             <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
         </div>
 
-        <!-- List bài đăng -->
-        <div id="post-list" class="space-y-8">
-            <p class="text-center animate-pulse">Đang triệu hồi các chú Cừu...</p>
+        <!-- 4. DANH SÁCH BÀI ĐĂNG -->
+        <div id="post-list" class="space-y-8 text-center">
+            <p class="animate-pulse">Đang triệu hồi các chú Cừu...</p>
         </div>
     </div>
 
@@ -79,26 +72,34 @@
         let allPosts = [];
 
         async function init() {
-            const res = await fetch(SCRIPT_URL);
-            allPosts = await res.json();
-            render(allPosts);
+            try {
+                const res = await fetch(SCRIPT_URL);
+                allPosts = await res.json();
+                render(allPosts);
+            } catch (e) {
+                document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà. Cừu kiểm tra link Script nhé!";
+            }
         }
 
         function render(data) {
             const list = document.getElementById('post-list');
+            if (data.length === 0) {
+                list.innerHTML = "<p>Hiện chưa có bài đăng nào cần đẩy!</p>";
+                return;
+            }
             list.innerHTML = data.map(item => `
-                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'} text-left shadow-2xl">
                     <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px] tracking-widest">
                         <span class="text-blue-400">${item.platform}</span>
                         <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">
                             ${item.status === 'Đang chạy' ? '🔥 ' + item.status : item.status}
                         </span>
                     </div>
-                    <h3 class="text-2xl font-black mb-2 text-white leading-tight">${item.goal}</h3>
-                    <p class="text-gray-400 text-xs mb-6 uppercase tracking-tighter">Key: ${item.keywords}</p>
+                    <h3 class="text-2xl font-black mb-2 text-white leading-tight uppercase tracking-tighter">${item.goal}</h3>
+                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest">Hashtag: ${item.keywords}</p>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="btn-glow bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-sm uppercase">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="btn-glow bg-white/10 text-white font-bold py-4 rounded-xl text-center text-sm uppercase">LẤY VĂN MẪU</a>
+                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase shadow-lg">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
@@ -129,7 +130,7 @@
                 document.getElementById('report-box').classList.add('hidden');
                 document.getElementById('success-msg').classList.remove('hidden');
             } catch (e) {
-                alert("Lỗi rồi, báo Admin ngay nha!");
+                alert("Lỗi rồi! Hãy báo cho Admin.");
                 btn.innerText = "GỬI LẠI";
                 btn.disabled = false;
             }
