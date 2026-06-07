@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPTAIN BOY - SOCIAL CHIẾN TÍCH</title>
-    <!-- Font chữ chuẩn không lỗi -->
+    <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -15,63 +14,79 @@
             color: white;
             font-family: 'Be Vietnam Pro', sans-serif;
         }
-        .galaxy-card {
-            background: rgba(16, 25, 45, 0.9);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
+        .galaxy-card { background: rgba(16, 25, 45, 0.9); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; backdrop-filter: blur(10px); }
         input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
         .btn-main { background: #3b82f6; transition: 0.3s; }
         .btn-main:hover { background: #2563eb; transform: translateY(-2px); }
         .btn-action { background: #f1c40f; color: black; font-weight: 900; }
-        .btn-filter { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-2xl mx-auto">
-        <!-- 1. HEADER -->
+        <!-- HEADER & DASHBOARD -->
         <header class="text-center mb-8">
-            <h1 class="text-4xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-xs tracking-widest font-bold">✨ TINH HÀ CHIẾN TÍCH ✨</p>
+            <h1 class="text-5xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
+            <p class="text-blue-300 text-[10px] tracking-[0.4em] font-bold uppercase mb-8">✨ TINH HÀ CHIẾN TÍCH ✨</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+                <div class="galaxy-card p-4 border-b-2 border-yellow-400">
+                    <p class="text-[8px] text-gray-400 uppercase">Tổng bài</p>
+                    <p id="stat-total" class="text-xl font-black italic">0</p>
+                </div>
+                <div class="galaxy-card p-4 border-b-2 border-blue-600">
+                    <p class="text-[8px] text-gray-400 uppercase">Facebook</p>
+                    <p id="stat-fb" class="text-xl font-black italic">0</p>
+                </div>
+                <div class="galaxy-card p-4 border-b-2 border-pink-600">
+                    <p class="text-[8px] text-gray-400 uppercase">TikTok</p>
+                    <p id="stat-tt" class="text-xl font-black italic">0</p>
+                </div>
+                <div class="galaxy-card p-4 border-b-2 border-white">
+                    <p class="text-[8px] text-gray-400 uppercase">Threads</p>
+                    <p id="stat-th" class="text-xl font-black italic">0</p>
+                </div>
+            </div>
         </header>
 
-        <!-- 2. FORM BÁO CÁO CHIẾN TÍCH -->
-        <div class="galaxy-card p-6 mb-10 border-t-4 border-blue-500">
-            <h2 class="text-xl font-black text-center mb-6 text-white uppercase tracking-widest">🚀 NỘP CHIẾN TÍCH</h2>
+        <!-- FORM BÁO CÁO -->
+        <div class="galaxy-card p-6 mb-12 border-t-4 border-blue-500">
+            <h2 class="text-xl font-black text-center mb-6 uppercase tracking-widest">🚀 NỘP CHIẾN TÍCH</h2>
             <div id="report-box">
                 <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Leo Top)">
                 <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
                 <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
-                <button onclick="sendReport()" id="btn-send" class="w-full btn-main text-white font-black py-4 rounded-xl mt-2 uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
+                <button onclick="sendReport()" id="btn-send" class="w-full btn-main text-white font-black py-4 rounded-xl mt-2 uppercase">GỬI CHIẾN TÍCH</button>
             </div>
             <div id="success-msg" class="hidden text-center py-4">
                 <p class="text-green-400 font-bold text-lg animate-bounce">✨ ĐÃ GHI NHẬN CHIẾN TÍCH! ✨</p>
-                <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2">Gửi thêm báo cáo khác</button>
+                <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2">Gửi thêm báo cáo</button>
             </div>
         </div>
+
+        <!-- BỘ LỌC -->
         <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
-            <button onclick="filter('All')" class="btn-filter px-5 py-2 rounded-full text-xs font-bold">Tất cả</button>
+            <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900/40 border border-blue-500 text-xs font-bold">Tất cả</button>
             <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
             <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
             <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
         </div>
+
+        <!-- LIST BÀI ĐĂNG -->
         <div id="post-list" class="space-y-8 text-center">
             <p class="animate-pulse">Đang triệu hồi các chú Cừu...</p>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw0xdKpr1pc_CFuF3YrNZ3YBs6_ToRcIXYLTUh5JnifO86MnfPd_AoQQlFRDGvEiA1H/exec";
+        // DÁN LINK WEB APP SCRIPT CỦA BẠN VÀO ĐÂY
+        const SCRIPT_URL = "THAY_LINK_SCRIPT_CUA_BAN_TAI_DAY";
         
         let allPosts = [];
 
-async function init() {
+        async function init() {
             try {
-          
-                const res = await fetch(SCRIPT_URL + "?t=" + new Date().getTime());
+                const res = await fetch(SCRIPT_URL);
                 allPosts = await res.json();
-                console.log("Dữ liệu nhận được:", allPosts);
                 render(allPosts);
             } catch (e) {
                 document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà!";
@@ -79,13 +94,16 @@ async function init() {
         }
 
         function render(data) {
+            // Cập nhật Dashboard số liệu
+            document.getElementById('stat-total').innerText = data.length;
+            document.getElementById('stat-fb').innerText = data.filter(x => x.platform === 'Facebook').length;
+            document.getElementById('stat-tt').innerText = data.filter(x => x.platform === 'TikTok').length;
+            document.getElementById('stat-th').innerText = data.filter(x => x.platform === 'Threads').length;
+
             const list = document.getElementById('post-list');
-            if (data.length === 0) {
-                list.innerHTML = "<p>Hiện chưa có bài đăng nào cần đẩy!</p>";
-                return;
-            }
+            if (data.length === 0) { list.innerHTML = "<p>Chưa có bài đăng nào cần đẩy!</p>"; return; }
             list.innerHTML = data.map(item => `
-                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'} text-left shadow-2xl">
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'} text-left">
                     <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px] tracking-widest">
                         <span class="text-blue-400">${item.platform}</span>
                         <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">
@@ -93,9 +111,9 @@ async function init() {
                         </span>
                     </div>
                     <h3 class="text-2xl font-black mb-2 text-white leading-tight uppercase tracking-tighter">${item.goal}</h3>
-                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest">Hashtag: ${item.keywords}</p>
+                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest">Key: ${item.keywords}</p>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase shadow-lg">CHIẾN NGAY</a>
+                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase">CHIẾN NGAY</a>
                         <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">LẤY VĂN MẪU</a>
                     </div>
                 </div>
@@ -112,27 +130,14 @@ async function init() {
             const account = document.getElementById('account').value;
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
-
-            if(!name || !quantity) return alert("Cừu ơi, điền đủ tên và số lượng nhé!");
-
-            btn.innerText = "ĐANG GỬI CHIẾN TÍCH...";
-            btn.disabled = true;
-
+            if(!name || !quantity) return alert("Cừu ơi điền đủ tên và số lượng nhé!");
+            btn.innerText = "ĐANG GỬI..."; btn.disabled = true;
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ name, account, quantity })
-                });
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
                 document.getElementById('report-box').classList.add('hidden');
                 document.getElementById('success-msg').classList.remove('hidden');
-            } catch (e) {
-                alert("Lỗi rồi! Hãy báo cho Admin.");
-                btn.innerText = "GỬI LẠI";
-                btn.disabled = false;
-            }
+            } catch (e) { alert("Lỗi gửi báo cáo!"); btn.innerText = "GỬI LẠI"; btn.disabled = false; }
         }
-
         init();
     </script>
 </body>
