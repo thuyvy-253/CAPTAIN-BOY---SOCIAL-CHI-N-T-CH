@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
+    <!-- Font chữ tiếng Việt không lỗi -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -18,60 +19,94 @@
             background: rgba(16, 25, 45, 0.9);
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
-        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: white; width: 100%; margin-bottom: 10px; }
+        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
+        input:focus { border-color: #3b82f6; }
+        .btn-glow { transition: 0.3s; }
+        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 md:p-8">
     <div class="max-w-2xl mx-auto">
-        <header class="text-center mb-8">
+        <header class="text-center mb-10">
             <h1 class="text-4xl font-black text-yellow-400 mb-2 tracking-tighter italic uppercase">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-sm tracking-widest">✨ TINH HÀ CHIẾN TÍCH ✨</p>
+            <p class="text-blue-300 text-xs tracking-[0.3em] font-bold">✨ TINH HÀ CHIẾN TÍCH ✨</p>
         </header>
 
         <!-- Form Báo Cáo Chiến Tích -->
-        <div class="galaxy-card p-6 mb-10 border-2 border-blue-500/50">
-            <h2 class="text-xl font-bold text-center mb-4 text-blue-400 uppercase">🚀 BÁO CÁO CHIẾN TÍCH</h2>
-            <div id="report-form">
-                <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Vui Vẻ)">
-                <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
-                <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
-                <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-lg transition-all">NỘP CHIẾN TÍCH</button>
+        <div class="galaxy-card p-6 mb-12 border-t-4 border-blue-500">
+            <h2 class="text-xl font-black text-center mb-6 text-white uppercase tracking-widest">🚀 NỘP CHIẾN TÍCH</h2>
+            <div id="report-box">
+                <div class="space-y-1">
+                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Tên Cừu</label>
+                    <input type="text" id="name" placeholder="Ví dụ: Cừu Leo Top">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Link/Acc đã cmt</label>
+                    <input type="text" id="account" placeholder="Link trang cá nhân hoặc tên Acc">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] text-blue-400 ml-2 font-bold uppercase">Số lượng CMT</label>
+                    <input type="number" id="quantity" placeholder="Bạn đã cmt bao nhiêu lần?">
+                </div>
+                <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl mt-4 transition-all uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
             </div>
-            <p id="msg" class="text-center mt-3 hidden text-green-400 font-bold">✨ Đã ghi nhận chiến tích! ✨</p>
+            <div id="success-msg" class="hidden text-center py-4">
+                <p class="text-green-400 font-bold text-lg">✨ ĐÃ GHI NHẬN CHIẾN TÍCH! ✨</p>
+                <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2">Gửi thêm báo cáo khác</button>
+            </div>
         </div>
 
-        <!-- Danh sách bài đăng -->
-        <div id="content" class="space-y-6">
-            <p class="text-center">Đang triệu hồi các chú Cừu...</p>
+        <!-- Filter -->
+        <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
+            <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900/40 border border-blue-500 text-xs font-bold">Tất cả</button>
+            <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
+            <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
+            <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
+        </div>
+
+        <!-- List bài đăng -->
+        <div id="post-list" class="space-y-8">
+            <p class="text-center animate-pulse">Đang triệu hồi các chú Cừu...</p>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "THAY_LINK_APPS_SCRIPT_MOI_CUA_BAN_VAO_DAY";
+        // THAY LINK SCRIPT CỦA BẠN VÀO ĐÂY
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAaUK6JTheNALpVt4m-dEHCKaz9xWce4izcmLwxdEyuRHsrQ6h-fj-dWFu7B3cO4o/exec";
+        
+        let allPosts = [];
 
-        async function fetchData() {
-            const response = await fetch(SCRIPT_URL);
-            const posts = await response.json();
-            render(posts);
+        async function init() {
+            const res = await fetch(SCRIPT_URL);
+            allPosts = await res.json();
+            render(allPosts);
         }
 
         function render(data) {
-            const container = document.getElementById('content');
-            container.innerHTML = data.map(item => `
-                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-500'}">
-                    <div class="flex justify-between items-center mb-3 text-[10px] font-bold uppercase">
+            const list = document.getElementById('post-list');
+            list.innerHTML = data.map(item => `
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
+                    <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px] tracking-widest">
                         <span class="text-blue-400">${item.platform}</span>
-                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400' : 'text-gray-500'} italic">${item.status}</span>
+                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">
+                            ${item.status === 'Đang chạy' ? '🔥 ' + item.status : item.status}
+                        </span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">${item.goal}</h3>
-                    <p class="text-gray-400 text-xs mb-4">Key: ${item.keywords}</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-bold py-3 rounded-lg text-center text-sm">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="bg-white/10 py-3 rounded-lg text-center text-sm">LẤY VĂN MẪU</a>
+                    <h3 class="text-2xl font-black mb-2 text-white leading-tight">${item.goal}</h3>
+                    <p class="text-gray-400 text-xs mb-6 uppercase tracking-tighter">Key: ${item.keywords}</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="${item.link}" target="_blank" class="btn-glow bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-sm uppercase">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="btn-glow bg-white/10 text-white font-bold py-4 rounded-xl text-center text-sm uppercase">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function filter(p) {
+            if(p === 'All') render(allPosts);
+            else render(allPosts.filter(x => x.platform === p));
         }
 
         async function sendReport() {
@@ -80,23 +115,27 @@
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
 
-            if(!name || !quantity) return alert("Cừu ơi điền đủ tên và số lượng nhé!");
+            if(!name || !quantity) return alert("Cừu ơi, điền đủ tên và số lượng nhé!");
 
-            btn.innerText = "ĐANG GỬI...";
+            btn.innerText = "ĐANG GỬI CHIẾN TÍCH...";
             btn.disabled = true;
 
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Rất quan trọng để không bị lỗi bảo mật
-                cache: 'no-cache',
-                body: JSON.stringify({ name, account, quantity })
-            });
-
-            document.getElementById('report-form').classList.add('hidden');
-            document.getElementById('msg').classList.remove('hidden');
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ name, account, quantity })
+                });
+                document.getElementById('report-box').classList.add('hidden');
+                document.getElementById('success-msg').classList.remove('hidden');
+            } catch (e) {
+                alert("Lỗi rồi, báo Admin ngay nha!");
+                btn.innerText = "GỬI LẠI";
+                btn.disabled = false;
+            }
         }
 
-        fetchData();
+        init();
     </script>
 </body>
 </html>
