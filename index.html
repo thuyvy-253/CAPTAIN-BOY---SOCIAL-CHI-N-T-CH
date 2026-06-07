@@ -50,34 +50,31 @@
                 <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2">Gửi thêm báo cáo khác</button>
             </div>
         </div>
-
-        <!-- 3. BỘ LỌC NỀN TẢNG (CHỖ BỊ THIẾU CỦA BẠN ĐÂY) -->
         <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
             <button onclick="filter('All')" class="btn-filter px-5 py-2 rounded-full text-xs font-bold">Tất cả</button>
             <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
             <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
             <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
         </div>
-
-        <!-- 4. DANH SÁCH BÀI ĐĂNG -->
         <div id="post-list" class="space-y-8 text-center">
             <p class="animate-pulse">Đang triệu hồi các chú Cừu...</p>
         </div>
     </div>
 
     <script>
-        // THAY LINK SCRIPT CỦA BẠN VÀO ĐÂY
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzg6df2lK4wcxiirYVhVHK2iKGjr-pNeepDb54LE4a1g1xLCcYMmWGr6va50nqIrZdA/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw0xdKpr1pc_CFuF3YrNZ3YBs6_ToRcIXYLTUh5JnifO86MnfPd_AoQQlFRDGvEiA1H/exec";
         
         let allPosts = [];
 
-        async function init() {
+async function init() {
             try {
-                const res = await fetch(SCRIPT_URL);
+          
+                const res = await fetch(SCRIPT_URL + "?t=" + new Date().getTime());
                 allPosts = await res.json();
+                console.log("Dữ liệu nhận được:", allPosts);
                 render(allPosts);
             } catch (e) {
-                document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà. Cừu kiểm tra link Script nhé!";
+                document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà!";
             }
         }
 
