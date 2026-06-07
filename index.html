@@ -4,117 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             background: #050b18;
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
+            background-size: 550px 550px;
             color: white;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Be Vietnam Pro', sans-serif;
         }
         .galaxy-card {
-            background: rgba(16, 25, 45, 0.8);
+            background: rgba(16, 25, 45, 0.9);
             border: 1px solid rgba(59, 130, 246, 0.3);
-            border-radius: 16px;
-            backdrop-filter: blur(8px);
+            border-radius: 20px;
         }
-        .btn-glow:hover {
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
-        }
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: #facc15;
-            border-radius: 50%;
-            width: 30px; height: 30px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: white; width: 100%; margin-bottom: 10px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4">
     <div class="max-w-2xl mx-auto">
-        <!-- Header -->
-        <header class="text-center mb-10">
-            <h1 class="text-4xl font-black text-yellow-400 mb-2 tracking-tighter">CAPTAIN BOY</h1>
-            <p class="text-blue-400 font-medium italic">✨ Tinh Hà Chiến Tích - Bí Kíp Leo Top ✨</p>
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-yellow-400 mb-2 tracking-tighter italic uppercase">CAPTAIN BOY</h1>
+            <p class="text-blue-300 text-sm tracking-widest">✨ TINH HÀ CHIẾN TÍCH ✨</p>
         </header>
 
-        <!-- Bộ lọc nhanh -->
-        <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
-            <button onclick="filter('All')" class="px-4 py-2 rounded-full bg-blue-900/50 border border-blue-500 text-sm">Tất cả</button>
-            <button onclick="filter('Facebook')" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 text-sm">Facebook</button>
-            <button onclick="filter('TikTok')" class="px-4 py-2 rounded-full bg-pink-600 hover:bg-pink-500 text-sm">TikTok</button>
-            <button onclick="filter('Threads')" class="px-4 py-2 rounded-full bg-black border border-gray-600 text-sm">Threads</button>
+        <!-- Form Báo Cáo Chiến Tích -->
+        <div class="galaxy-card p-6 mb-10 border-2 border-blue-500/50">
+            <h2 class="text-xl font-bold text-center mb-4 text-blue-400 uppercase">🚀 BÁO CÁO CHIẾN TÍCH</h2>
+            <div id="report-form">
+                <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Vui Vẻ)">
+                <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
+                <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
+                <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-lg transition-all">NỘP CHIẾN TÍCH</button>
+            </div>
+            <p id="msg" class="text-center mt-3 hidden text-green-400 font-bold">✨ Đã ghi nhận chiến tích! ✨</p>
         </div>
 
         <!-- Danh sách bài đăng -->
-        <div id="loading" class="flex justify-center my-10">
-            <div class="loading-spinner"></div>
-            <span class="ml-3">Đang kết nối Tinh Hà...</span>
+        <div id="content" class="space-y-6">
+            <p class="text-center">Đang triệu hồi các chú Cừu...</p>
         </div>
-        
-        <div id="content" class="space-y-6"></div>
     </div>
 
     <script>
-        // THAY LINK WEB APP CỦA BẠN VÀO ĐÂY
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw_v9Wi_uTG-u12i_UVELfxSR_hTVzDhmAdVtjVLVJGaBW3oqaBSIGAwruQvt4bgmVQ/exec";
-        
-        let posts = [];
+        const SCRIPT_URL = "THAY_LINK_APPS_SCRIPT_MOI_CUA_BAN_VAO_DAY";
 
         async function fetchData() {
-            try {
-                const response = await fetch(SCRIPT_URL);
-                posts = await response.json();
-                document.getElementById('loading').classList.add('hidden');
-                render(posts);
-            } catch (error) {
-                console.error("Lỗi:", error);
-                document.getElementById('loading').innerHTML = "Không thể kết nối. Hãy kiểm tra lại link Script!";
-            }
+            const response = await fetch(SCRIPT_URL);
+            const posts = await response.json();
+            render(posts);
         }
+
         function render(data) {
             const container = document.getElementById('content');
-            if (data.length === 0) {
-                container.innerHTML = "<p class='text-center text-gray-500'>Hiện chưa có nhiệm vụ nào mới, Cừu nghỉ ngơi nhé! 🐑</p>";
-                return;
-            }
             container.innerHTML = data.map(item => `
-                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-500'} mb-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <span class="text-[10px] uppercase tracking-widest bg-blue-800 px-2 py-1 rounded">${item.platform}</span>
-                        <span class="text-xs ${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-400'} font-bold">
-                            ${item.status === 'Đang chạy' ? '🔥 ' + item.status : item.status}
-                        </span>
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-500'}">
+                    <div class="flex justify-between items-center mb-3 text-[10px] font-bold uppercase">
+                        <span class="text-blue-400">${item.platform}</span>
+                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400' : 'text-gray-500'} italic">${item.status}</span>
                     </div>
-                    
-                    <h3 class="text-xl font-bold text-white mb-2">${item.goal}</h3>
-                    <p class="text-gray-400 text-sm mb-4 leading-relaxed">${item.keywords}</p>
-                    
-                    <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="btn-glow bg-yellow-500 text-black font-black py-3 rounded-xl text-center text-sm transition-all">
-                            CHIẾN NGAY
-                        </a>
-                        <button onclick="copyContent(\`${item.content.replace(/`/g, "\\`")}\`)" class="bg-white/10 hover:bg-white/20 text-white font-bold py-3 rounded-xl text-sm transition-all">
-                            COPY VĂN MẪU
-                        </button>
+                    <h3 class="text-xl font-bold mb-2">${item.goal}</h3>
+                    <p class="text-gray-400 text-xs mb-4">Key: ${item.keywords}</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-bold py-3 rounded-lg text-center text-sm">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="bg-white/10 py-3 rounded-lg text-center text-sm">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filter(p) {
-            if (p === 'All') render(posts);
-            else render(posts.filter(x => x.platform === p));
-        }
+        async function sendReport() {
+            const name = document.getElementById('name').value;
+            const account = document.getElementById('account').value;
+            const quantity = document.getElementById('quantity').value;
+            const btn = document.getElementById('btn-send');
 
-        function copyContent(text) {
-            navigator.clipboard.writeText(text);
-            alert("✨ Đã copy văn mẫu! Các Cừu lên bài thôi!");
+            if(!name || !quantity) return alert("Cừu ơi điền đủ tên và số lượng nhé!");
+
+            btn.innerText = "ĐANG GỬI...";
+            btn.disabled = true;
+
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Rất quan trọng để không bị lỗi bảo mật
+                cache: 'no-cache',
+                body: JSON.stringify({ name, account, quantity })
+            });
+
+            document.getElementById('report-form').classList.add('hidden');
+            document.getElementById('msg').classList.remove('hidden');
         }
 
         fetchData();
