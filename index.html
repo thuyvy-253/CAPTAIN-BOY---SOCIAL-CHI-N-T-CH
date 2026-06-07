@@ -6,40 +6,32 @@
     <title>CAPTAIN BOY - TINH HÀ CHIẾN TÍCH</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Thêm thư viện vẽ biểu đồ -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            background: #050b18;
-            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
-            background-size: 550px 550px;
-            color: white;
-            font-family: 'Be Vietnam Pro', sans-serif;
-        }
+        body { background: #050b18; color: white; font-family: 'Be Vietnam Pro', sans-serif; background-image: radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 40px); background-size: 400px 400px; }
         .galaxy-card { background: rgba(16, 25, 45, 0.9); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; backdrop-filter: blur(10px); }
         input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 12px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
-        .btn-main { background: #3b82f6; transition: 0.3s; }
-        .btn-main:hover { background: #2563eb; transform: translateY(-2px); }
-        .btn-action { background: #f1c40f; color: black; font-weight: 900; }
-        canvas { max-height: 250px !important; width: 100% !important; }
+        .btn-action { background: #f1c40f; color: black; font-weight: 900; transition: 0.3s; }
+        .btn-action:hover { transform: scale(1.05); }
+        canvas { max-height: 200px !important; }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-4xl mx-auto">
-        <!-- HEADER -->
-        <header class="text-center mb-8">
+        <header class="text-center mb-10">
             <h1 class="text-5xl font-black text-yellow-400 mb-2 italic uppercase">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-[10px] tracking-[0.4em] font-bold uppercase mb-8">✨ TINH HÀ CHIẾN TÍCH ✨</p>
+            <p class="text-blue-300 text-[10px] tracking-[0.4em] font-bold mb-8 uppercase">✨ TINH HÀ CHIẾN TÍCH ✨</p>
             
-            <!-- BIỂU ĐỒ DASHBOARD -->
+            <!-- BIỂU ĐỒ DASHBOARD TỪ SHEET -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                 <div class="galaxy-card p-6">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 text-center">Phân bổ nền tảng</p>
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Phân bổ nền tảng</p>
                     <canvas id="pieChart"></canvas>
                 </div>
-                <div class="galaxy-card p-6">
-                    <p class="text-[10px] text-gray-400 uppercase mb-4 text-center">Số lượng bài đăng</p>
-                    <canvas id="barChart"></canvas>
+                <div class="galaxy-card p-6 flex flex-col justify-center items-center">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tổng KPI thực tế</p>
+                    <p id="totalKpi" class="text-6xl font-black text-yellow-400">0</p>
+                    <p class="text-blue-400 mt-2 font-bold uppercase tracking-widest text-xs">Điểm Social</p>
                 </div>
             </div>
         </header>
@@ -47,133 +39,101 @@
         <div class="max-w-2xl mx-auto">
             <!-- FORM BÁO CÁO -->
             <div class="galaxy-card p-6 mb-12 border-t-4 border-blue-500 shadow-2xl">
-                <h2 class="text-xl font-black text-center mb-6 uppercase tracking-widest">🚀 NỘP CHIẾN TÍCH</h2>
+                <h2 class="text-xl font-black text-center mb-6 uppercase tracking-widest text-blue-400">🚀 NỘP CHIẾN TÍCH</h2>
                 <div id="report-box">
                     <input type="text" id="name" placeholder="Tên Cừu (VD: Cừu Leo Top)">
                     <input type="text" id="account" placeholder="Link hoặc Tên Acc đã cmt">
                     <input type="number" id="quantity" placeholder="Số lượng cmt đã thực hiện">
-                    <button onclick="sendReport()" id="btn-send" class="w-full btn-main text-white font-black py-4 rounded-xl mt-2 uppercase">GỬI CHIẾN TÍCH</button>
+                    <button onclick="sendReport()" id="btn-send" class="w-full bg-blue-600 font-black py-4 rounded-xl mt-2 uppercase tracking-widest">GỬI CHIẾN TÍCH</button>
                 </div>
                 <div id="success-msg" class="hidden text-center py-4">
-                    <p class="text-green-400 font-bold text-lg animate-bounce">✨ ĐÃ GHI NHẬN CHIẾN TÍCH! ✨</p>
-                    <button onclick="window.location.reload()" class="text-xs text-blue-400 underline mt-2 text-center">Gửi thêm báo cáo</button>
+                    <p class="text-green-400 font-bold text-lg animate-bounce text-center">✨ ĐÃ GHI NHẬN! ✨</p>
                 </div>
             </div>
 
             <!-- BỘ LỌC -->
-            <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
-                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900/40 border border-blue-500 text-xs font-bold">Tất cả</button>
-                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
-                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
-                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
+            <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2">
+                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-blue-900 border border-blue-500 text-xs font-bold">Tất cả</button>
+                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold text-center">Facebook</button>
+                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold text-center">TikTok</button>
+                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold text-center">Threads</button>
             </div>
 
             <!-- LIST BÀI ĐĂNG -->
-            <div id="post-list" class="space-y-8 text-center">
-                <p class="animate-pulse">Đang triệu hồi các chú Cừu...</p>
-            </div>
+            <div id="post-list" class="space-y-8"></div>
         </div>
     </div>
 
     <script>
-        // THAY LINK SCRIPT CỦA BẠN VÀO ĐÂY
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzg6df2lK4wcxiirYVhVHK2iKGjr-pNeepDb54LE4a1g1xLCcYMmWGr6va50nqIrZdA/exec";
-        
+        const SCRIPT_URL = "THAY_LINK_SCRIPT_MOI_CUA_BAN_TAI_DAY";
         let allPosts = [];
-        let pieChart, barChart;
+        let pieChart;
 
         async function init() {
             try {
                 const res = await fetch(SCRIPT_URL);
-                allPosts = await res.json();
+                const data = await res.json();
+                
+                allPosts = data.posts;
+                
+                // Cập nhật số liệu Dashboard
+                document.getElementById('totalKpi').innerText = data.stats.totalKpi.toLocaleString();
+                updatePieChart(data.stats);
+                
                 render(allPosts);
-                updateCharts(allPosts);
-            } catch (e) {
-                document.getElementById('post-list').innerHTML = "Lỗi kết nối Tinh Hà!";
-            }
+            } catch (e) { document.getElementById('post-list').innerHTML = "Lỗi kết nối!"; }
+        }
+
+        function updatePieChart(stats) {
+            const ctx = document.getElementById('pieChart').getContext('2d');
+            if(pieChart) pieChart.destroy();
+            pieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Facebook', 'TikTok', 'Threads'],
+                    datasets: [{
+                        data: [stats.facebook, stats.tiktok, stats.threads],
+                        backgroundColor: ['#2563eb', '#db2777', '#ffffff'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom', labels: { color: 'white' } } } }
+            });
         }
 
         function render(data) {
             const list = document.getElementById('post-list');
-            if (data.length === 0) { list.innerHTML = "<p>Chưa có bài đăng nào!</p>"; return; }
+            if (data.length === 0) { list.innerHTML = "<p class='text-center'>Chưa có bài mới!</p>"; return; }
             list.innerHTML = data.map(item => `
-                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'} text-left">
-                    <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px] tracking-widest text-gray-400">
-                        <span>${item.platform}</span>
-                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : ''}">${item.status === 'Đang chạy' ? '🔥 ' + item.status : item.status}</span>
+                <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
+                    <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px]">
+                        <span class="text-blue-400">${item.platform}</span>
+                        <span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic text-center">${item.status}</span>
                     </div>
-                    <h3 class="text-2xl font-black mb-2 text-white leading-tight uppercase italic tracking-tighter">${item.goal}</h3>
-                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest leading-relaxed">Hashtag: ${item.keywords}</p>
+                    <h3 class="text-2xl font-black mb-2 text-white leading-tight uppercase italic">${item.goal}</h3>
+                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest leading-relaxed">Key: ${item.keywords}</p>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase transition-all hover:scale-105 shadow-lg">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20 transition-all hover:bg-white/20">LẤY VĂN MẪU</a>
+                        <a href="${item.link}" target="_blank" class="btn-action py-4 rounded-xl text-center text-xs uppercase shadow-lg text-center">CHIẾN NGAY</a>
+                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20 text-center">LẤY VĂN MẪU</a>
                     </div>
                 </div>
             `).join('');
         }
 
-        function updateCharts(data) {
-            const fbCount = data.filter(x => x.platform === 'Facebook').length;
-            const ttCount = data.filter(x => x.platform === 'TikTok').length;
-            const thCount = data.filter(x => x.platform === 'Threads').length;
-
-            // Biểu đồ tròn
-            const ctxPie = document.getElementById('pieChart').getContext('2d');
-            if(pieChart) pieChart.destroy();
-            pieChart = new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Facebook', 'TikTok', 'Threads'],
-                    datasets: [{
-                        data: [fbCount, ttCount, thCount],
-                        backgroundColor: ['#2563eb', '#db2777', '#ffffff'],
-                        borderWidth: 0
-                    }]
-                },
-                options: { plugins: { legend: { position: 'bottom', labels: { color: 'white', font: { size: 10 } } } } }
-            });
-
-            // Biểu đồ cột
-            const ctxBar = document.getElementById('barChart').getContext('2d');
-            if(barChart) barChart.destroy();
-            barChart = new Chart(ctxBar, {
-                type: 'bar',
-                data: {
-                    labels: ['Facebook', 'TikTok', 'Threads'],
-                    datasets: [{
-                        label: 'Bài đăng',
-                        data: [fbCount, ttCount, thCount],
-                        backgroundColor: '#f1c40f'
-                    }]
-                },
-                options: { 
-                    scales: { 
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
-                        x: { ticks: { color: 'white' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        function filter(p) {
-            if(p === 'All') render(allPosts);
-            else render(allPosts.filter(x => x.platform === p));
-        }
+        function filter(p) { render(p === 'All' ? allPosts : allPosts.filter(x => x.platform === p)); }
 
         async function sendReport() {
             const name = document.getElementById('name').value;
             const account = document.getElementById('account').value;
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
-            if(!name || !quantity) return alert("Cừu ơi điền đủ tên và số lượng nhé!");
+            if(!name || !quantity) return alert("Điền đủ tên và số lượng nhé!");
             btn.innerText = "ĐANG GỬI..."; btn.disabled = true;
-            try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
-                document.getElementById('report-box').classList.add('hidden');
-                document.getElementById('success-msg').classList.remove('hidden');
-            } catch (e) { alert("Lỗi gửi báo cáo!"); btn.innerText = "GỬI LẠI"; btn.disabled = false; }
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
+            document.getElementById('report-box').classList.add('hidden');
+            document.getElementById('success-msg').classList.remove('hidden');
         }
+
         init();
     </script>
 </body>
