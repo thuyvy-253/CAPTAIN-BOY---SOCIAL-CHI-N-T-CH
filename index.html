@@ -8,131 +8,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* 1. NỀN GRADIENT BIẾN CHUYỂN XANH - VÀNG */
         body {
-            margin: 0;
-            padding: 0;
-            color: white;
+            margin: 0; padding: 0; color: white;
             font-family: 'Be Vietnam Pro', sans-serif;
             min-height: 100vh;
             background: linear-gradient(135deg, #050b18, #0a192f, #1e3a8a, #422006, #050b18) !important;
             background-size: 400% 400% !important;
             animation: galaxyMove 15s ease infinite !important;
-            overflow-x: hidden;
-            position: relative;
+            overflow-x: hidden; position: relative;
         }
-
-        @keyframes galaxyMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #galaxy-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .galaxy-card {
-            background: rgba(16, 25, 45, 0.75);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            border-radius: 24px;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 10;
-        }
-
-        /* NÚT NHẠC CUSTOM */
-        #music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(234, 179, 8, 0.2);
-            border: 2px solid #eab308;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
-        }
-        
-        #music-control:hover {
-            transform: scale(1.1);
-            background: rgba(234, 179, 8, 0.4);
-        }
-
-        .music-playing {
-            animation: pulse-yellow 2s infinite;
-        }
-
-        @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
-        }
-
-        .main-content {
-            position: relative;
-            z-index: 10;
-        }
-
-        input {
-            background: rgba(255, 255, 255, 0.07) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 12px;
-            padding: 14px;
-            color: white;
-            width: 100%;
-            margin-bottom: 12px;
-            outline: none;
-            transition: 0.3s;
-        }
-        
-        input:focus {
-            border-color: #eab308 !important;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
-        }
-
-        .glow-text {
-            text-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
-        }
+        @keyframes galaxyMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        #galaxy-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .galaxy-card { background: rgba(16, 25, 45, 0.75); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 24px; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); position: relative; z-index: 10; }
+        #music-control { position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 50px; height: 50px; border-radius: 50%; background: rgba(234, 179, 8, 0.2); border: 2px solid #eab308; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); }
+        .music-playing { animation: pulse-yellow 2s infinite; }
+        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        .main-content { position: relative; z-index: 10; }
+        input { background: rgba(255, 255, 255, 0.07) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 12px; padding: 14px; color: white; width: 100%; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #eab308 !important; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+        .glow-text { text-shadow: 0 0 20px rgba(234, 179, 8, 0.6); }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <!-- AUDIO ELEMENT -->
-    <audio id="bg-music" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- NÚT ĐIỀU KHIỂN NHẠC -->
-    <div id="music-control" onclick="toggleMusic()">
-        <span id="music-icon" style="font-size: 24px;">🔇</span>
-    </div>
-
+    <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
+    <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 24px;">🔇</span></div>
     <canvas id="galaxy-canvas"></canvas>
 
     <div class="max-w-4xl mx-auto main-content">
         <header class="text-center mb-10">
-            <h1 class="text-6xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter glow-text">
-                CAPTAIN BOY
-            </h1>
-            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-8 uppercase">
-                ✨ SOCIAL CHIẾN TÍCH ✨
-            </p>
+            <h1 class="text-6xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter glow-text">CAPTAIN BOY</h1>
+            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-8 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="galaxy-card p-6">
                     <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Số bài tương tác</p>
                     <canvas id="chartPlatforms"></canvas>
@@ -140,6 +47,14 @@
                 <div class="galaxy-card p-6">
                     <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT</p>
                     <canvas id="chartKPI"></canvas>
+                </div>
+            </div>
+
+            <!-- KHU VỰC LỜI NHẮN ĐẦU TRANG -->
+            <div id="note-container" class="hidden max-w-2xl mx-auto mb-10">
+                <div class="galaxy-card p-4 border-l-4 border-yellow-400 bg-yellow-400/5">
+                    <p class="text-[10px] text-yellow-400 uppercase font-bold mb-1 text-left italic">📢 Thông điệp từ vũ trụ:</p>
+                    <p id="note-text" class="text-white text-sm text-left font-medium"></p>
                 </div>
             </div>
         </header>
@@ -157,7 +72,7 @@
             </div>
 
             <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
-                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold hover:bg-white/20">Tất cả</button>
+                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold hover:bg-white/20 whitespace-nowrap">Tất cả</button>
                 <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold shadow-lg shadow-blue-600/30">Facebook</button>
                 <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
                 <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
@@ -172,95 +87,46 @@
     </div>
 
     <script>
-        // --- SCRIPT ĐIỀU KHIỂN NHẠC ---
-      // --- SCRIPT ĐIỀU KHIỂN NHẠC TỰ ĐỘNG ---
-const music = document.getElementById('bg-music');
-const musicBtn = document.getElementById('music-control');
-const musicIcon = document.getElementById('music-icon');
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-control');
+        const musicIcon = document.getElementById('music-icon');
 
-// Hàm bật/tắt nhạc thủ công
-function toggleMusic() {
-    if (music.paused) {
-        music.play();
-        musicIcon.innerText = "🔊";
-        musicBtn.classList.add('music-playing');
-    } else {
-        music.pause();
-        musicIcon.innerText = "🔇";
-        musicBtn.classList.remove('music-playing');
-    }
-}
+        function toggleMusic() {
+            if (music.paused) { music.play(); musicIcon.innerText = "🔊"; musicBtn.classList.add('music-playing'); } 
+            else { music.pause(); musicIcon.innerText = "🔇"; musicBtn.classList.remove('music-playing'); }
+        }
 
-// TỰ ĐỘNG PHÁT KHI VÀO TRANG
-function autoPlayMusic() {
-    music.play().then(() => {
-        // Nếu trình duyệt cho phép phát ngay
-        musicIcon.innerText = "🔊";
-        musicBtn.classList.add('music-playing');
-    }).catch(() => {
-        // Nếu trình duyệt chặn (phổ biến), nhạc sẽ đợi cú click đầu tiên của người dùng
-        console.log("Trình duyệt chặn tự động phát. Nhạc sẽ bật sau khi bạn tương tác.");
-        
-        const playOnInteraction = () => {
-            music.play();
-            musicIcon.innerText = "🔊";
-            musicBtn.classList.add('music-playing');
-            // Sau khi phát thành công, gỡ bỏ sự kiện để không chạy lại nữa
-            document.removeEventListener('click', playOnInteraction);
-            document.removeEventListener('touchstart', playOnInteraction);
-        };
+        function autoPlayMusic() {
+            music.play().then(() => { musicIcon.innerText = "🔊"; musicBtn.classList.add('music-playing'); })
+            .catch(() => {
+                const playOnInteraction = () => { music.play(); musicIcon.innerText = "🔊"; musicBtn.classList.add('music-playing'); document.removeEventListener('click', playOnInteraction); };
+                document.addEventListener('click', playOnInteraction);
+            });
+        }
+        window.addEventListener('load', autoPlayMusic);
 
-        document.addEventListener('click', playOnInteraction);
-        document.addEventListener('touchstart', playOnInteraction); // Cho điện thoại
-    });
-}
-
-// Chạy hàm autoPlay ngay khi load xong trang
-window.addEventListener('load', autoPlayMusic);
-
-        // --- SCRIPT TẠO TINH HÀ (SAO BAY) ---
         const canvas = document.getElementById('galaxy-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-
         function initGalaxy() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
             particles = [];
             for (let i = 0; i < 150; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 0.5,
-                    speed: Math.random() * 0.8 + 0.2,
-                    color: Math.random() > 0.5 ? '#facc15' : '#60a5fa',
-                    opacity: Math.random()
-                });
+                particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2 + 0.5, speed: Math.random() * 0.8 + 0.2, color: Math.random() > 0.5 ? '#facc15' : '#60a5fa', opacity: Math.random() });
             }
         }
-
         function drawGalaxy() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
-                ctx.globalAlpha = p.opacity;
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                p.y -= p.speed;
-                if (p.y < -10) p.y = canvas.height + 10;
-                p.opacity += (Math.random() - 0.5) * 0.05;
-                if (p.opacity < 0.1) p.opacity = 0.1;
-                if (p.opacity > 1) p.opacity = 1;
+                ctx.globalAlpha = p.opacity; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
+                p.y -= p.speed; if (p.y < -10) p.y = canvas.height + 10;
+                p.opacity += (Math.random() - 0.5) * 0.05; if (p.opacity < 0.1) p.opacity = 0.1; if (p.opacity > 1) p.opacity = 1;
             });
             requestAnimationFrame(drawGalaxy);
         }
+        window.addEventListener('resize', initGalaxy); initGalaxy(); drawGalaxy();
 
-        window.addEventListener('resize', initGalaxy);
-        initGalaxy();
-        drawGalaxy();
-
-        // --- DỮ LIỆU VÀ BIỂU ĐỒ ---
+        // --- DỮ LIỆU ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzyWLw1F-pGhjOU_-8kyvIfzOAJWtNYUCLaahwCP07dF41XPur26lzlY_ML1Vopdn9/exec";
         let allPosts = [];
         let chart1, chart2;
@@ -269,12 +135,17 @@ window.addEventListener('load', autoPlayMusic);
             try {
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
+                
+                // Hiển thị lời nhắn nếu có
+                if (data.note) {
+                    document.getElementById('note-text').innerText = data.note;
+                    document.getElementById('note-container').classList.remove('hidden');
+                }
+
                 allPosts = data.posts;
                 updateCharts(data.stats);
                 render(allPosts);
-            } catch (e) { 
-                document.getElementById('post-list').innerHTML = "Lỗi kết nối Vũ Trụ!"; 
-            }
+            } catch (e) { document.getElementById('post-list').innerHTML = "Lỗi kết nối Vũ Trụ!"; }
         }
 
         function updateCharts(stats) {
@@ -282,14 +153,7 @@ window.addEventListener('load', autoPlayMusic);
             if(chart1) chart1.destroy();
             chart1 = new Chart(ctx1, {
                 type: 'doughnut',
-                data: {
-                    labels: ['Facebook', 'TikTok', 'Threads'],
-                    datasets: [{
-                        data: [stats.fb, stats.tt, stats.th],
-                        backgroundColor: ['#2563eb', '#db2777', '#facc15'],
-                        borderWidth: 0
-                    }]
-                },
+                data: { labels: ['Facebook', 'TikTok', 'Threads'], datasets: [{ data: [stats.fb, stats.tt, stats.th], backgroundColor: ['#2563eb', '#db2777', '#facc15'], borderWidth: 0 }] },
                 options: { plugins: { legend: { position: 'bottom', labels: { color: 'white', font: {size: 10} } } } }
             });
 
@@ -297,29 +161,22 @@ window.addEventListener('load', autoPlayMusic);
             if(chart2) chart2.destroy();
             chart2 = new Chart(ctx2, {
                 type: 'bar',
-                data: {
-                    labels: ['Kỳ vọng', 'Thực tế'],
-                    datasets: [{
-                        label: 'Số lượng CMT',
-                        data: [stats.expected, stats.actual],
-                        backgroundColor: ['#334155', '#eab308'],
-                        borderRadius: 10
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'white' } },
-                        x: { ticks: { color: 'white' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
+                data: { labels: ['Kỳ vọng', 'Thực tế'], datasets: [{ label: 'Số lượng CMT', data: [stats.expected, stats.actual], backgroundColor: ['#334155', '#eab308'], borderRadius: 10 }] },
+                options: { scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'white' } }, x: { ticks: { color: 'white' } } }, plugins: { legend: { display: false } } }
             });
         }
 
         function render(data) {
             const list = document.getElementById('post-list');
             if(!data || data.length === 0) { list.innerHTML = "<p class='text-center'>Chưa có dữ liệu!</p>"; return; }
-            list.innerHTML = data.map(item => `
+            list.innerHTML = data.map(item => {
+                // Kiểm tra văn mẫu
+                const hasTemplate = item.content && item.content.toString().trim() !== "";
+                const templateBtn = hasTemplate 
+                    ? `<a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-[10px] uppercase border border-white/20 hover:bg-white/20 transition-all">VĂN MẪU</a>`
+                    : `<div class="bg-gray-800/50 text-gray-500 font-bold py-4 rounded-xl text-center text-[9px] uppercase border border-gray-700 opacity-50 cursor-not-allowed">KHÔNG CÓ VĂN MẪU</div>`;
+
+                return `
                 <div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
                     <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px]">
                         <span class="text-blue-400">${item.platform}</span>
@@ -328,11 +185,12 @@ window.addEventListener('load', autoPlayMusic);
                     <h3 class="text-2xl font-black mb-2 text-white italic uppercase">${item.goal}</h3>
                     <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">Key: ${item.keywords}</p>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-xs uppercase hover:scale-105 transition-all">CHIẾN NGAY</a>
-                        <a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">VĂN MẪU</a>
+                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-xs uppercase hover:scale-105 transition-all shadow-lg shadow-yellow-500/20">CHIẾN NGAY</a>
+                        ${templateBtn}
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function filter(p) { render(p === 'All' ? allPosts : allPosts.filter(x => x.platform === p)); }
