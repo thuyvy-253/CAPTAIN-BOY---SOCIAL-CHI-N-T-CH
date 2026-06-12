@@ -8,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* GIAO DIỆN GALAXY CHỦ ĐẠO */
         body {
             margin: 0; padding: 0; color: white;
             font-family: 'Be Vietnam Pro', sans-serif;
@@ -18,97 +17,51 @@
             animation: galaxyMove 15s ease infinite !important;
             overflow-x: hidden; position: relative;
         }
-
-        @keyframes galaxyMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #galaxy-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
-        }
-
-        .galaxy-card {
-            background: rgba(16, 25, 45, 0.75);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            border-radius: 24px;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            position: relative; z-index: 10;
-        }
-
-        #music-control {
-            position: fixed; bottom: 20px; right: 20px; z-index: 100;
-            width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(234, 179, 8, 0.2); border: 2px solid #eab308;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
-        }
-
+        @keyframes galaxyMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        #galaxy-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .galaxy-card { background: rgba(16, 25, 45, 0.75); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 24px; backdrop-filter: blur(15px); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); position: relative; z-index: 10; }
+        #music-control { position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 50px; height: 50px; border-radius: 50%; background: rgba(234, 179, 8, 0.2); border: 2px solid #eab308; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
         .music-playing { animation: pulse-yellow 2s infinite; }
-        @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
-        }
-
-        input {
-            background: rgba(255, 255, 255, 0.07) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 12px; padding: 14px; color: white; width: 100%;
-            margin-bottom: 12px; outline: none; transition: 0.3s;
-        }
-        
-        input:focus {
-            border-color: #eab308 !important;
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
-        }
-
+        @keyframes pulse-yellow { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        input { background: rgba(255, 255, 255, 0.07) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 12px; padding: 14px; color: white; width: 100%; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        input:focus { border-color: #eab308 !important; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
         .glow-text { text-shadow: 0 0 20px rgba(234, 179, 8, 0.6); }
     </style>
 </head>
 <body class="p-4 md:p-8">
-    <!-- ÂM THANH NỀN -->
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
     <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 24px;">🔇</span></div>
-
     <canvas id="galaxy-canvas"></canvas>
 
     <div class="max-w-4xl mx-auto relative z-10">
         <!-- HEADER -->
-        <header class="text-center mb-10">
+        <header class="text-center mb-6">
             <h1 class="text-6xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter glow-text">CAPTAIN BOY</h1>
-            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-8 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
+            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-6 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
             
+            <!-- VỊ TRÍ LỜI NHẮN (KHUNG ĐỎ ẢNH 1) -->
+            <div id="main-announcement" class="hidden max-w-2xl mx-auto mb-8">
+                <div class="galaxy-card p-4 border-l-4 border-yellow-500 bg-yellow-500/5 text-center">
+                    <p id="announcement-text" class="text-yellow-400 font-bold italic tracking-wide"></p>
+                </div>
+            </div>
+
+            <!-- BIỂU ĐỒ -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <!-- BIỂU ĐỒ NỀN TẢNG -->
                 <div class="galaxy-card p-6">
                     <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Số bài tương tác</p>
                     <canvas id="chartPlatforms"></canvas>
                 </div>
-                
-                <!-- BIỂU ĐỒ TIẾN ĐỘ + LỜI NHẮN (Ô ĐỎ CỦA BẠN) -->
-                <div class="galaxy-card p-6 flex flex-col justify-between">
-                    <div>
-                        <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT</p>
-                        <canvas id="chartKPI"></canvas>
-                    </div>
-                    
-                    <!-- VÙNG HIỂN THỊ LỜI NHẮN -->
-                    <div id="note-box" class="mt-4 p-3 bg-white/5 rounded-xl border border-white/10 hidden text-left">
-                        <p class="text-[9px] text-yellow-500 font-bold uppercase mb-1 italic">📢 Lời nhắn:</p>
-                        <p id="note-content" class="text-xs text-gray-200 font-medium"></p>
-                    </div>
+                <div class="galaxy-card p-6">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT</p>
+                    <canvas id="chartKPI"></canvas>
                 </div>
             </div>
         </header>
 
-        <!-- FORM NỘP CHIẾN TÍCH -->
         <div class="max-w-2xl mx-auto">
-            <div class="galaxy-card p-8 mb-12 border-t-4 border-yellow-500 shadow-2xl text-center">
+            <!-- NỘP CHIẾN TÍCH -->
+            <div class="galaxy-card p-8 mb-12 border-t-4 border-yellow-500 text-center">
                 <h2 class="text-xl font-black mb-6 uppercase tracking-widest text-yellow-400">🚀 NỘP CHIẾN TÍCH</h2>
                 <div id="report-box">
                     <input type="text" id="name" placeholder="Tên acc Cừu cmt ">
@@ -119,7 +72,7 @@
                 <div id="success-msg" class="hidden text-yellow-400 font-bold py-4">✨ ĐÃ GHI NHẬN VÀO VŨ TRỤ! ✨</div>
             </div>
 
-            <!-- BỘ LỌC -->
+            <!-- FILTER -->
             <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
                 <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold hover:bg-white/20">Tất cả</button>
                 <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold shadow-lg shadow-blue-600/30">Facebook</button>
@@ -127,7 +80,7 @@
                 <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
             </div>
 
-            <!-- DANH SÁCH BÀI VIẾT -->
+            <!-- DANH SÁCH BÀI -->
             <div id="post-list" class="space-y-8"></div>
         </div>
 
@@ -137,7 +90,6 @@
     </div>
 
     <script>
-        // --- 1. XỬ LÝ NHẠC VÀ HIỆU ỨNG ---
         const music = document.getElementById('bg-music');
         const musicBtn = document.getElementById('music-control');
         const musicIcon = document.getElementById('music-icon');
@@ -155,7 +107,7 @@
             });
         });
 
-        // HIỆU ỨNG SAO BAY
+        // HIỆU ỨNG SAO
         const canvas = document.getElementById('galaxy-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -177,8 +129,7 @@
         }
         window.addEventListener('resize', initGalaxy); initGalaxy(); drawGalaxy();
 
-        // --- 2. XỬ LÝ DỮ LIỆU TỪ GOOGLE SHEET ---
-        // THAY LINK SCRIPT_URL CỦA BẠN VÀO ĐÂY
+        // --- DỮ LIỆU ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzyWLw1F-pGhjOU_-8kyvIfzOAJWtNYUCLaahwCP07dF41XPur26lzlY_ML1Vopdn9/exec";
         let allPosts = [];
         let chart1, chart2;
@@ -188,19 +139,16 @@
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 
-                // HIỂN THỊ LỜI NHẮN TRONG CARD BIỂU ĐỒ
+                // HIỂN THỊ LỜI NHẮN ĐÚNG VỊ TRÍ
                 if (data.note) {
-                    document.getElementById('note-content').innerText = data.note;
-                    document.getElementById('note-box').classList.remove('hidden');
+                    document.getElementById('announcement-text').innerText = "📢 " + data.note;
+                    document.getElementById('main-announcement').classList.remove('hidden');
                 }
 
                 allPosts = data.posts;
                 updateCharts(data.stats);
                 render(allPosts);
-            } catch (e) { 
-                document.getElementById('post-list').innerHTML = "<div class='text-center p-10 opacity-50 uppercase tracking-widest text-xs'>🚀 Đang kết nối với tàu mẹ...</div>";
-                console.error(e);
-            }
+            } catch (e) { document.getElementById('post-list').innerHTML = "Lỗi kết nối!"; }
         }
 
         function updateCharts(stats) {
@@ -223,13 +171,10 @@
 
         function render(data) {
             const list = document.getElementById('post-list');
-            if(!data || data.length === 0) { list.innerHTML = "<p class='text-center opacity-50 uppercase text-xs tracking-widest py-10'>Chưa có nhiệm vụ mới!</p>"; return; }
+            if(!data || data.length === 0) { list.innerHTML = "<p class='text-center py-10 opacity-50'>Chưa có dữ liệu!</p>"; return; }
             
             list.innerHTML = data.map(item => {
-                // KIỂM TRA LINK VĂN MẪU (CỘT F)
-                const hasLink = item.content && item.content.toString().trim() !== "" && item.content.toString().includes("http");
-                
-                // NẾU CÓ LINK -> HIỆN NÚT VĂN MẪU, NẾU TRỐNG -> HIỆN NÚT XÁM KHÓA
+                const hasLink = item.content && item.content.toString().trim() !== "" && item.content.toString().startsWith("http");
                 const templateBtn = hasLink 
                     ? `<a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20 hover:bg-white/20 transition-all">VĂN MẪU</a>`
                     : `<div class="bg-gray-800/40 text-gray-500 font-bold py-4 rounded-xl text-center text-[10px] uppercase border border-gray-700 opacity-50 cursor-not-allowed">KHÔNG CÓ VĂN MẪU</div>`;
@@ -258,16 +203,13 @@
             const account = document.getElementById('account').value;
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
-            if(!name || !quantity) return alert("Cừu ơi, điền đủ tên và số lượng nhé!");
-            btn.innerText = "ĐANG TRUYỀN TIN..."; btn.disabled = true;
+            if(!name || !quantity) return alert("Điền đủ thông tin nhé!");
+            btn.innerText = "ĐANG GỬI..."; btn.disabled = true;
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
                 document.getElementById('report-box').classList.add('hidden');
                 document.getElementById('success-msg').classList.remove('hidden');
-            } catch(e) {
-                alert("Gửi thất bại, hãy thử lại sau!");
-                btn.innerText = "GỬI CHIẾN TÍCH"; btn.disabled = false;
-            }
+            } catch(e) { alert("Lỗi gửi tin!"); btn.disabled = false; btn.innerText = "GỬI CHIẾN TÍCH"; }
         }
 
         init();
