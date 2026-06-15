@@ -28,6 +28,23 @@
     </style>
 </head>
 <body class="p-4 md:p-8">
+    <!-- Navigation Bar -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-[#050b18]/90 backdrop-blur-md border-b border-yellow-500/20">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center h-16">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center font-black text-black">B</div>
+            <span class="font-black text-yellow-400 italic tracking-tighter uppercase">Captain Boy Bot</span>
+        </div>
+        <div class="flex gap-4 md:gap-8 text-[11px] font-bold uppercase tracking-widest">
+            <a href="index.html" class="text-yellow-400 hover:glow-text transition-all">Chiến Tích</a>
+            <a href="huong-dan.html" class="text-white hover:text-yellow-400 transition-all">Cẩm Nang</a>
+            <a href="bang-xep-hang.html" class="text-white hover:text-yellow-400 transition-all">BXH</a>
+            <a href="tieu-su.html" class="text-white hover:text-yellow-400 transition-all">Profile</a>
+        </div>
+    </div>
+</nav>
+<!-- Thêm khoảng trống để không bị Menu che mất nội dung -->
+<div class="h-20"></div>
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
     <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 24px;">🔇</span></div>
     <canvas id="galaxy-canvas"></canvas>
