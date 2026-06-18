@@ -18,74 +18,75 @@
             overflow-x: hidden; position: relative;
         }
         @keyframes galaxyMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .galaxy-card { background: rgba(16, 25, 45, 0.75); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: 20px; backdrop-filter: blur(15px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); transition: 0.3s; }
-        input { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 10px; padding: 10px; color: white; width: 100%; margin-bottom: 8px; outline: none; font-size: 13px; }
+        .galaxy-card { background: rgba(16, 25, 45, 0.8); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: 16px; backdrop-filter: blur(10px); transition: 0.3s; }
+        input { background: rgba(255, 255, 255, 0.05) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 8px; padding: 8px 12px; color: white; width: 100%; margin-bottom: 6px; outline: none; font-size: 12px; }
         input:focus { border-color: #eab308 !important; }
-        .glow-text { text-shadow: 0 0 15px rgba(234, 179, 8, 0.5); }
-        .btn-filter { transition: all 0.3s ease; cursor: pointer; }
-        .active-running { background-color: #eab308 !important; color: black !important; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); transform: scale(1.02); }
-        .active-completed { background-color: #1e3a8a !important; color: white !important; box-shadow: 0 0 15px rgba(30, 58, 138, 0.4); transform: scale(1.02); }
-        .tab-inactive { opacity: 0.5; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-        #music-control { position: fixed; bottom: 15px; right: 15px; z-index: 100; width: 40px; height: 40px; border-radius: 50%; background: rgba(234, 179, 8, 0.1); border: 1px solid #eab308; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .glow-text { text-shadow: 0 0 10px rgba(234, 179, 8, 0.6); }
+        .btn-filter { transition: all 0.3s ease; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        .active-running { background: #eab308 !important; color: black !important; font-weight: 900; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); }
+        .active-completed { background: #1e40af !important; color: white !important; font-weight: 900; box-shadow: 0 0 15px rgba(30, 64, 175, 0.4); }
+        .tab-inactive { opacity: 0.4; background: rgba(255,255,255,0.05); }
+        #music-control { position: fixed; bottom: 15px; right: 15px; z-index: 100; width: 35px; height: 35px; border-radius: 50%; background: rgba(0,0,0,0.5); border: 1px solid #eab308; display: flex; align-items: center; justify-content: center; cursor: pointer; }
     </style>
 </head>
 <body class="p-3 md:p-6">
     <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
-    <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 18px;">🔇</span></div>
+    <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 16px;">🔇</span></div>
 
     <div class="max-w-5xl mx-auto relative z-10">
         <header class="text-center mb-4">
             <h1 class="text-4xl md:text-5xl font-black text-yellow-400 mb-1 italic uppercase tracking-tighter glow-text">CAPTAIN BOY</h1>
             <p class="text-blue-300 text-[8px] tracking-[0.4em] font-bold mb-4 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
             
-            <div id="main-announcement" class="hidden max-w-xl mx-auto mb-6">
-                <div class="galaxy-card p-3 border border-yellow-500/30 bg-yellow-500/5 text-center">
-                    <p id="announcement-text" class="text-yellow-400 font-bold italic text-xs"></p>
+            <div id="main-announcement" class="hidden max-w-xl mx-auto mb-4">
+                <div class="galaxy-card p-2 border border-yellow-500/30 bg-yellow-500/5 text-center">
+                    <p id="announcement-text" class="text-yellow-400 font-bold italic text-[11px]"></p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-3xl mx-auto">
-                <div class="galaxy-card p-4">
-                    <p class="text-[9px] text-gray-400 uppercase mb-2 font-bold">Nền tảng</p>
-                    <canvas id="chartPlatforms" height="100"></canvas>
+            <!-- BIỂU ĐỒ NHỎ GỌN -->
+            <div class="grid grid-cols-2 gap-3 mb-6 max-w-2xl mx-auto">
+                <div class="galaxy-card p-3">
+                    <p class="text-[8px] text-gray-400 uppercase mb-1 font-bold">Nền tảng</p>
+                    <div class="h-[80px]"><canvas id="chartPlatforms"></canvas></div>
                 </div>
-                <div class="galaxy-card p-4">
-                    <p class="text-[9px] text-gray-400 uppercase mb-2 font-bold">Tiến độ KPI</p>
-                    <canvas id="chartKPI" height="100"></canvas>
+                <div class="galaxy-card p-3">
+                    <p class="text-[8px] text-gray-400 uppercase mb-1 font-bold">Tiến độ KPI</p>
+                    <div class="h-[80px]"><canvas id="chartKPI"></canvas></div>
                 </div>
             </div>
         </header>
 
-        <!-- FORM NHỎ GỌN -->
-        <div class="max-w-xl mx-auto">
-            <div class="galaxy-card p-5 mb-8 border-t-2 border-yellow-500 text-center">
-                <h2 class="text-sm font-black mb-4 uppercase tracking-widest text-yellow-400">🚀 NỘP CHIẾN TÍCH</h2>
+        <div class="max-w-2xl mx-auto">
+            <!-- NỘP CHIẾN TÍCH NHỎ GỌN -->
+            <div class="galaxy-card p-4 mb-6 border-t-2 border-yellow-500">
+                <h2 class="text-center text-xs font-black mb-3 uppercase tracking-widest text-yellow-400">🚀 NỘP CHIẾN TÍCH</h2>
                 <div id="report-box" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <input type="text" id="name" placeholder="Tên acc Cừu">
                     <input type="text" id="account" placeholder="Tên bài cmt">
                     <input type="number" id="quantity" placeholder="Số lượng">
-                    <button onclick="sendReport()" id="btn-send" class="sm:col-span-3 bg-yellow-500 hover:bg-yellow-400 text-black font-black py-2 rounded-lg text-xs uppercase transition-all">GỬI CHIẾN TÍCH</button>
+                    <button onclick="sendReport()" id="btn-send" class="sm:col-span-3 bg-yellow-500 hover:bg-yellow-400 text-black font-black py-2 rounded text-[10px] uppercase transition-all">GỬI CHIẾN TÍCH</button>
                 </div>
-                <div id="success-msg" class="hidden text-yellow-400 font-bold text-xs py-2">✨ ĐÃ GHI NHẬN! ✨</div>
+                <div id="success-msg" class="hidden text-center text-yellow-400 font-bold text-[10px] py-2">✨ ĐÃ GHI NHẬN! ✨</div>
             </div>
 
-            <!-- TAB LỌC -->
-            <div class="flex justify-center gap-3 mb-6">
-                <button id="btn-running" onclick="switchTab('Đang chạy')" class="btn-filter active-running px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider">🔥 Đang chạy</button>
-                <button id="btn-completed" onclick="switchTab('Hoàn thành')" class="btn-filter tab-inactive px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider">✅ Hoàn thành</button>
+            <!-- CHỈ CÓ 2 NÚT - KHÔNG CÓ TẤT CẢ -->
+            <div class="flex justify-center gap-2 mb-6">
+                <button id="btn-running" onclick="switchTab('Đang chạy')" class="btn-filter active-running flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider">🔥 ĐANG CHẠY</button>
+                <button id="btn-completed" onclick="switchTab('Hoàn thành')" class="btn-filter tab-inactive flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider">✅ HOÀN THÀNH</button>
             </div>
 
-            <!-- DANH SÁCH HIỂN THỊ DẠNG GRID 2 CỘT -->
+            <!-- DANH SÁCH GRID 2 CỘT (MOBILE 1 CỘT) -->
             <div id="container-running">
-                <div id="list-running" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div id="list-running" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
 
             <div id="container-completed" class="hidden">
-                <div id="list-completed" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div id="list-completed" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
         </div>
 
-        <footer class="text-center py-10 mt-6 border-t border-white/5 font-bold opacity-30 text-[8px]">@NHUNGCONBOTCUACAPTAINBOY</footer>
+        <footer class="text-center py-10 mt-6 border-t border-white/5 font-bold opacity-30 text-[7px]">@NHUNGCONBOTCUACAPTAINBOY</footer>
     </div>
 
     <script>
@@ -115,11 +116,11 @@
         function updateCharts(stats) {
             const ctx1 = document.getElementById('chartPlatforms').getContext('2d');
             if(chart1) chart1.destroy();
-            chart1 = new Chart(ctx1, { type: 'doughnut', data: { labels: ['FB', 'TT', 'TH'], datasets: [{ data: [stats.fb, stats.tt, stats.th], backgroundColor: ['#2563eb', '#db2777', '#facc15'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'white', font: {size: 8} } } } } });
+            chart1 = new Chart(ctx1, { type: 'doughnut', data: { labels: ['FB', 'TT', 'TH'], datasets: [{ data: [stats.fb, stats.tt, stats.th], backgroundColor: ['#2563eb', '#db2777', '#facc15'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: 'white', font: {size: 7} } } } } });
 
             const ctx2 = document.getElementById('chartKPI').getContext('2d');
             if(chart2) chart2.destroy();
-            chart2 = new Chart(ctx2, { type: 'bar', data: { labels: ['Kỳ vọng', 'Thực tế'], datasets: [{ data: [stats.expected, stats.actual], backgroundColor: ['#334155', '#eab308'], borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: 'white', font: {size: 8} } } }, plugins: { legend: { display: false } } } });
+            chart2 = new Chart(ctx2, { type: 'bar', data: { labels: ['Kỳ vọng', 'Thực tế'], datasets: [{ data: [stats.expected, stats.actual], backgroundColor: ['#334155', '#eab308'], borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { ticks: { color: 'white', font: {size: 7} } } }, plugins: { legend: { display: false } } } });
         }
 
         function renderLists(data) {
@@ -129,22 +130,22 @@
             const createCardHTML = (item) => {
                 const hasLink = item.content && item.content.toString().startsWith("http");
                 const templateBtn = hasLink 
-                    ? `<a href="${item.content}" target="_blank" class="bg-white/5 text-white font-bold py-2 px-1 rounded-lg text-center text-[9px] uppercase border border-white/10 hover:bg-white/10 transition-all">VĂN MẪU</a>`
-                    : `<div class="bg-gray-800/20 text-gray-600 font-bold py-2 px-1 rounded-lg text-center text-[8px] uppercase border border-gray-800/50">NO TEXT</div>`;
+                    ? `<a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-1.5 rounded text-[9px] text-center border border-white/20 hover:bg-white/20">VĂN MẪU</a>`
+                    : `<div class="bg-gray-800/40 text-gray-600 font-bold py-1.5 rounded text-[8px] text-center border border-gray-800/50">NO TEXT</div>`;
                 
                 const isRunning = item.status.trim() === 'Đang chạy';
 
-                return `<div class="galaxy-card p-4 border-l-4 ${isRunning ? 'border-l-yellow-400' : 'border-l-blue-900'} flex flex-col justify-between">
+                return `<div class="galaxy-card p-3 border-l-4 ${isRunning ? 'border-l-yellow-400' : 'border-l-blue-700'} flex flex-col justify-between min-h-[140px]">
                     <div>
-                        <div class="flex justify-between items-center mb-2 uppercase font-bold text-[8px]">
+                        <div class="flex justify-between items-center mb-1 uppercase font-bold text-[7px]">
                             <span class="text-blue-400">${item.platform}</span>
                             <span class="${isRunning ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">${item.status}</span>
                         </div>
-                        <h3 class="text-sm font-black mb-1 text-white leading-tight uppercase line-clamp-2">${item.goal}</h3>
-                        <p class="text-gray-500 text-[8px] mb-4 uppercase truncate">Key: ${item.keywords}</p>
+                        <h3 class="text-[11px] font-black mb-1 text-white leading-tight uppercase line-clamp-2">${item.goal}</h3>
+                        <p class="text-gray-500 text-[7px] mb-2 uppercase truncate opacity-70">Key: ${item.keywords}</p>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-auto">
-                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-2 rounded-lg text-center text-[9px] uppercase hover:opacity-80">CHIẾN NGAY</a>
+                    <div class="grid grid-cols-2 gap-1.5 mt-auto">
+                        <a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-1.5 rounded text-[9px] text-center hover:opacity-80">CHIẾN NGAY</a>
                         ${templateBtn}
                     </div>
                 </div>`;
@@ -153,8 +154,8 @@
             const runningPosts = data.filter(x => x.status.trim() === 'Đang chạy');
             const completedPosts = data.filter(x => x.status.trim() === 'Hoàn thành');
 
-            listRunning.innerHTML = runningPosts.length > 0 ? runningPosts.map(createCardHTML).join('') : '<p class="col-span-full text-center text-gray-600 italic text-xs py-10">Trống...</p>';
-            listCompleted.innerHTML = completedPosts.length > 0 ? completedPosts.map(createCardHTML).join('') : '<p class="col-span-full text-center text-gray-600 italic text-xs py-10">Trống...</p>';
+            listRunning.innerHTML = runningPosts.length > 0 ? runningPosts.map(createCardHTML).join('') : '<p class="col-span-full text-center text-gray-600 italic text-[10px] py-4">Chưa có bài đang chạy...</p>';
+            listCompleted.innerHTML = completedPosts.length > 0 ? completedPosts.map(createCardHTML).join('') : '<p class="col-span-full text-center text-gray-600 italic text-[10px] py-4">Chưa có bài hoàn thành...</p>';
         }
         
         function switchTab(type) {
@@ -164,13 +165,13 @@
             const conCompleted = document.getElementById('container-completed');
 
             if(type === 'Đang chạy') {
-                btnRunning.className = "btn-filter active-running px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider";
-                btnCompleted.className = "btn-filter tab-inactive px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider";
+                btnRunning.className = "btn-filter active-running flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider";
+                btnCompleted.className = "btn-filter tab-inactive flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider";
                 conRunning.classList.remove('hidden');
                 conCompleted.classList.add('hidden');
             } else {
-                btnCompleted.className = "btn-filter active-completed px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider";
-                btnRunning.className = "btn-filter tab-inactive px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-wider";
+                btnCompleted.className = "btn-filter active-completed flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider";
+                btnRunning.className = "btn-filter tab-inactive flex-1 max-w-[150px] py-2 rounded-full text-[10px] uppercase tracking-wider";
                 conCompleted.classList.remove('hidden');
                 conRunning.classList.add('hidden');
             }
@@ -182,22 +183,17 @@
             const quantity = document.getElementById('quantity').value;
             const btn = document.getElementById('btn-send');
             if (!name || !account || !quantity) return alert("Nhập đủ thông tin cừu ơi!");
-            
             btn.innerText = "ĐANG GỬI...";
             btn.disabled = true;
-
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, account, quantity })
-                });
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, account, quantity }) });
                 document.getElementById('report-box').classList.add('hidden');
                 document.getElementById('success-msg').classList.remove('hidden');
                 setTimeout(() => {
                     document.getElementById('report-box').classList.remove('hidden');
                     document.getElementById('success-msg').classList.add('hidden');
                     btn.innerText = "GỬI CHIẾN TÍCH"; btn.disabled = false;
-                }, 2500);
+                }, 2000);
             } catch (e) { alert("Lỗi rồi!"); btn.disabled = false; }
         }
         init();
