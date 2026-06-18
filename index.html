@@ -70,8 +70,8 @@
 
         <!-- NÚT CHỌN TRẠNG THÁI (CHỈ CÓ 2 NÚT) -->
         <div class="flex justify-center gap-4 mb-8">
-            <button id="btn-running" onclick="switchTab('Đang chạy')" class="btn-filter active-running px-10 py-2.5 rounded-full text-[11px] uppercase tracking-widest">🔥 ĐANG CHẠY</button>
-            <button id="btn-completed" onclick="switchTab('Hoàn thành')" class="btn-filter tab-inactive px-10 py-2.5 rounded-full text-[11px] uppercase tracking-widest">✅ HOÀN THÀNH</button>
+            <button id="btn-running" onclick="switchTab('Đang chạy')" class="btn-filter active-running px-10 py-2.5 rounded-full text-[11px] uppercase tracking-widest"> ĐANG CHẠY</button>
+            <button id="btn-completed" onclick="switchTab('Hoàn thành')" class="btn-filter tab-inactive px-10 py-2.5 rounded-full text-[11px] uppercase tracking-widest"> HOÀN THÀNH</button>
         </div>
 
         <!-- DANH SÁCH - LUÔN LÀ GRID 2 CỘT TRÊN MÁY TÍNH -->
@@ -128,7 +128,7 @@
                 const hasLink = item.content && item.content.toString().startsWith("http");
                 const templateBtn = hasLink 
                     ? `<a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-2 rounded text-[10px] text-center border border-white/20 hover:bg-white/20 transition-all">VĂN MẪU</a>`
-                    : `<div class="bg-gray-800/40 text-gray-600 font-bold py-2 rounded text-[9px] text-center border border-gray-800/50">KHÔNG VĂN MẪU</div>`;
+                    : `<div class="bg-gray-800/40 text-gray-600 font-bold py-2 rounded text-[9px] text-center border border-gray-800/50">KHÔNG CÓ VĂN MẪU</div>`;
                 
                 const isRunning = item.status.trim() === 'Đang chạy';
 
