@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTAIN BOY - SOCIAL CHIẾN TÍCH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0; color: white;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #050b18, #0a192f, #1e3a8a, #422006, #050b18) !important;
+            background-size: 400% 400% !important;
+            animation: galaxyMove 15s ease infinite !important;
+            overflow-x: hidden; position: relative;
+        }
+        @keyframes galaxyMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .galaxy-card { background: rgba(16, 25, 45, 0.75); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 24px; backdrop-filter: blur(15px); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); position: relative; z-index: 10; }
+        #music-control { position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 50px; height: 50px; border-radius: 50%; background: rgba(234, 179, 8, 0.2); border: 2px solid #eab308; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .music-playing { animation: pulse-yellow 2s infinite; }
+        input { background: rgba(255, 255, 255, 0.07) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; border-radius: 12px; padding: 14px; color: white; width: 100%; margin-bottom: 12px; outline: none; }
+        input:focus { border-color: #eab308 !important; }
+        .glow-text { text-shadow: 0 0 20px rgba(234, 179, 8, 0.6); }
+        @keyframes pulse-yellow { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 20px #eab308; } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <audio id="bg-music" loop><source src="music.mp3" type="audio/mpeg"></audio>
+    <div id="music-control" onclick="toggleMusic()"><span id="music-icon" style="font-size: 24px;">🔇</span></div>
+
+    <div class="max-w-4xl mx-auto relative z-10">
+        <header class="text-center mb-6">
+            <h1 class="text-6xl font-black text-yellow-400 mb-2 italic uppercase tracking-tighter glow-text">CAPTAIN BOY</h1>
+            <p class="text-blue-300 text-[10px] tracking-[0.5em] font-bold mb-6 uppercase">✨ SOCIAL CHIẾN TÍCH ✨</p>
+            
+            <div id="main-announcement" class="hidden max-w-2xl mx-auto mb-8">
+                <div class="galaxy-card p-4 border border-yellow-500/50 bg-yellow-500/10 text-center shadow-lg shadow-yellow-500/10">
+                    <p id="announcement-text" class="text-yellow-400 font-bold italic tracking-wide text-sm"></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                <div class="galaxy-card p-6">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Số bài tương tác</p>
+                    <canvas id="chartPlatforms"></canvas>
+                </div>
+                <div class="galaxy-card p-6">
+                    <p class="text-[10px] text-gray-400 uppercase mb-4 font-bold">Tiến độ CMT</p>
+                    <canvas id="chartKPI"></canvas>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-2xl mx-auto">
+            <div class="galaxy-card p-8 mb-12 border-t-4 border-yellow-500 text-center">
+                <h2 class="text-xl font-black mb-6 uppercase tracking-widest text-yellow-400">🚀 NỘP CHIẾN TÍCH</h2>
+                <div id="report-box">
+                    <input type="text" id="name" placeholder="Tên acc Cừu cmt ">
+                    <input type="text" id="account" placeholder="Tên bài Cừu đã cmt">
+                    <input type="number" id="quantity" placeholder="Số lượng cmt thực hiện">
+                    <button onclick="sendReport()" id="btn-send" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-xl mt-4 uppercase transition-all">GỬI CHIẾN TÍCH</button>
+                </div>
+                <div id="success-msg" class="hidden text-yellow-400 font-bold py-4">✨ ĐÃ GHI NHẬN VÀO VŨ TRỤ! ✨</div>
+            </div>
+
+            <div class="flex justify-center gap-2 mb-8 overflow-x-auto pb-2 px-2">
+                <button onclick="filter('All')" class="px-5 py-2 rounded-full bg-white/10 border border-white/20 text-xs font-bold">Tất cả</button>
+                <button onclick="filter('Facebook')" class="px-5 py-2 rounded-full bg-blue-600 text-xs font-bold">Facebook</button>
+                <button onclick="filter('TikTok')" class="px-5 py-2 rounded-full bg-pink-600 text-xs font-bold">TikTok</button>
+                <button onclick="filter('Threads')" class="px-5 py-2 rounded-full bg-black border border-gray-600 text-xs font-bold">Threads</button>
+            </div>
+
+            <div id="post-list" class="space-y-8"></div>
+        </div>
+        <footer class="text-center py-20 mt-10 border-t border-white/10 font-bold opacity-50 text-[10px]">@NHUNGCONBOTCUACAPTAINBOY</footer>
+    </div>
+
+    <script>
+        const music = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-control');
+        const musicIcon = document.getElementById('music-icon');
+        function toggleMusic() { if (music.paused) { music.play(); musicIcon.innerText = "🔊"; musicBtn.classList.add('music-playing'); } else { music.pause(); musicIcon.innerText = "🔇"; musicBtn.classList.remove('music-playing'); } }
+        
+        // --- THAY URL CỦA BẠN VÀO ĐÂY ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7o80TxIkZPgsTW5nKFuVOE1h0WtbsGBfMrW8tmbIX_fIrIbF9B6W1QhOWtnn39bA1/exec";
+        
+        let allPosts = [];
+        let chart1, chart2;
+
+        async function init() {
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const data = await res.json();
+                if (data.note) {
+                    document.getElementById('announcement-text').innerText = "📢 " + data.note;
+                    document.getElementById('main-announcement').classList.remove('hidden');
+                }
+                allPosts = data.posts;
+                updateCharts(data.stats);
+                render(allPosts);
+            } catch (e) { console.error(e); }
+        }
+
+        function updateCharts(stats) {
+            const ctx1 = document.getElementById('chartPlatforms').getContext('2d');
+            if(chart1) chart1.destroy();
+            chart1 = new Chart(ctx1, { type: 'doughnut', data: { labels: ['Facebook', 'TikTok', 'Threads'], datasets: [{ data: [stats.fb, stats.tt, stats.th], backgroundColor: ['#2563eb', '#db2777', '#facc15'], borderWidth: 0 }] }, options: { plugins: { legend: { position: 'bottom', labels: { color: 'white', font: {size: 10} } } } } });
+
+            const ctx2 = document.getElementById('chartKPI').getContext('2d');
+            if(chart2) chart2.destroy();
+            chart2 = new Chart(ctx2, { type: 'bar', data: { labels: ['Kỳ vọng', 'Thực tế'], datasets: [{ data: [stats.expected, stats.actual], backgroundColor: ['#334155', '#eab308'], borderRadius: 10 }] }, options: { scales: { y: { beginAtZero: true, ticks: { color: 'white' } }, x: { ticks: { color: 'white' } } }, plugins: { legend: { display: false } } } });
+        }
+
+        function render(data) {
+            const list = document.getElementById('post-list');
+            list.innerHTML = data.map(item => {
+                const hasLink = item.content && item.content.toString().startsWith("http");
+                const templateBtn = hasLink 
+                    ? `<a href="${item.content}" target="_blank" class="bg-white/10 text-white font-bold py-4 rounded-xl text-center text-xs uppercase border border-white/20">VĂN MẪU</a>`
+                    : `<div class="bg-gray-800/40 text-gray-500 font-bold py-4 rounded-xl text-center text-[10px] uppercase border border-gray-700 opacity-50">KHÔNG CÓ VĂN MẪU</div>`;
+                return `<div class="galaxy-card p-6 border-l-4 ${item.status === 'Đang chạy' ? 'border-l-yellow-400' : 'border-l-blue-900'}">
+                    <div class="flex justify-between items-center mb-4 uppercase font-bold text-[10px]"><span class="text-blue-400">${item.platform}</span><span class="${item.status === 'Đang chạy' ? 'text-yellow-400 animate-pulse' : 'text-gray-500'} italic">${item.status}</span></div>
+                    <h3 class="text-2xl font-black mb-2 text-white italic uppercase">${item.goal}</h3>
+                    <p class="text-gray-400 text-[10px] mb-6 uppercase tracking-widest font-bold">Key: ${item.keywords}</p>
+                    <div class="grid grid-cols-2 gap-3"><a href="${item.link}" target="_blank" class="bg-yellow-500 text-black font-black py-4 rounded-xl text-center text-xs uppercase">CHIẾN NGAY</a>${templateBtn}</div>
+                </div>`;
+            }).join('');
+        }
+        
+        function filter(p) { render(p === 'All' ? allPosts : allPosts.filter(x => x.platform === p)); }
+
+        // --- HÀM GỬI DỮ LIỆU ĐÃ SỬA ---
+        async function sendReport() {
+            const name = document.getElementById('name').value;
+            const account = document.getElementById('account').value;
+            const quantity = document.getElementById('quantity').value;
+            const btn = document.getElementById('btn-send');
+
+            if (!name || !account || !quantity) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+
+            btn.innerText = "ĐANG GỬI...";
+            btn.disabled = true;
+
+            try {
+                // Sử dụng mode 'no-cors' để tránh lỗi CORS từ phía trình duyệt
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, account, quantity })
+                });
+
+                // Hiển thị thành công
+                document.getElementById('report-box').classList.add('hidden');
+                document.getElementById('success-msg').classList.remove('hidden');
+
+                // Reset form sau 3 giây
+                setTimeout(() => {
+                    document.getElementById('report-box').classList.remove('hidden');
+                    document.getElementById('success-msg').classList.add('hidden');
+                    document.getElementById('name').value = "";
+                    document.getElementById('account').value = "";
+                    document.getElementById('quantity').value = "";
+                    btn.innerText = "GỬI CHIẾN TÍCH";
+                    btn.disabled = false;
+                }, 3000);
+
+            } catch (e) {
+                alert("Gửi thất bại, thử lại sau!");
+                btn.innerText = "GỬI CHIẾN TÍCH";
+                btn.disabled = false;
+            }
+        }
+        
+        init();
+    </script>
+</body>
+</html>
